@@ -2,9 +2,893 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b6e7f">
 <meta name="robots" content="noindex,nofollow">
-<meta http-equiv="refresh" content="0; url=./%E6%B2%96%E7%B9%A9%E6%97%85%E9%81%8A%E6%89%8B%E5%86%8A.html">
-<title>沖繩旅遊手冊</title>
+<meta name="format-detection" content="telephone=yes">
+<title>沖繩旅遊手冊 ｜ 2026.11.07 – 11.14</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --ocean:#0b6e7f; --ocean-d:#064a58; --ocean-l:#7fd4d8;
+  --aqua:#14b8bd; --sand:#f7efe2; --sand-d:#e9dcc6;
+  --coral:#ff7a5c; --sun:#ffc043;
+  --ink:#10343b; --ink-soft:#4a6a70; --line:rgba(11,110,127,.14);
+  --card:#fff; --radius:20px;
+  --shadow:0 2px 4px rgba(6,74,88,.04), 0 12px 32px rgba(6,74,88,.08);
+  --shadow-lg:0 20px 60px rgba(6,74,88,.16);
+}
+*{box-sizing:border-box}
+html{max-width:100%}
+body{max-width:100%;overflow-x:clip}
+@media(max-width:700px){:root{--radius:16px}}
+html{scroll-behavior:smooth;scroll-padding-top:78px}
+body{
+  margin:0; font-family:"Noto Sans TC","Outfit",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink); background:var(--sand); line-height:1.75; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(900px 500px at 12% -5%, rgba(127,212,216,.35), transparent 60%),
+    radial-gradient(700px 420px at 92% 8%, rgba(255,192,67,.18), transparent 62%),
+    radial-gradient(800px 600px at 50% 110%, rgba(20,184,189,.14), transparent 60%);
+}
+img{max-width:100%}
+a{color:var(--ocean)}
+
+/* ---------- NAV ---------- */
+nav{
+  position:sticky; position:-webkit-sticky; top:0; z-index:1000;
+  backdrop-filter:saturate(180%) blur(16px); -webkit-backdrop-filter:saturate(180%) blur(16px);
+  background:rgba(247,239,226,.9); border-bottom:1px solid var(--line);
+  padding-top:env(safe-area-inset-top);
+  transition:box-shadow .25s, background .25s;
+}
+nav.stuck{box-shadow:0 4px 20px rgba(6,74,88,.13); background:rgba(247,239,226,.96)}
+.nav-in{max-width:1080px;margin:0 auto;padding:11px max(20px,env(safe-area-inset-left));display:flex;align-items:center;gap:18px}
+.brand{font-weight:900;letter-spacing:.04em;font-size:.95rem;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.brand i{font-style:normal;font-size:1.15rem}
+.nav-links{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-left:auto;scroll-snap-type:x proximity;mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 18px),transparent 100%)}
+.nav-links a{scroll-snap-align:center}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{
+  text-decoration:none;color:var(--ink-soft);font-size:.85rem;font-weight:500;
+  padding:7px 13px;border-radius:999px;white-space:nowrap;transition:.2s;
+}
+.nav-links a:hover{background:rgba(20,184,189,.14);color:var(--ocean-d)}
+.nav-links a.on{background:var(--ocean);color:#fff}
+
+/* ---------- HERO ---------- */
+header{position:relative;overflow:hidden;color:#fff;isolation:isolate}
+header::before{
+  content:""; position:absolute; inset:0; z-index:-2;
+  background:linear-gradient(160deg,#0a5f77 0%,#0b8ea0 42%,#2ec6c0 78%,#8fe3d4 100%);
+}
+.waves{position:absolute;left:0;right:0;bottom:-2px;z-index:-1;opacity:.9}
+.sun{position:absolute;top:-70px;right:-40px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(255,224,150,.95),rgba(255,160,90,.35) 55%,transparent 70%);z-index:-1;filter:blur(2px)}
+.hero{max-width:1080px;margin:0 auto;padding:78px 20px 130px;position:relative}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;font-size:.78rem;letter-spacing:.24em;font-weight:600;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);
+  padding:7px 16px;border-radius:999px;backdrop-filter:blur(6px);
+}
+h1{
+  font-size:clamp(2.6rem,8vw,5.2rem); line-height:1.02; margin:.42em 0 .1em;
+  font-weight:900; letter-spacing:-.02em; text-shadow:0 4px 30px rgba(0,60,70,.25);
+}
+h1 small{display:block;font-family:"Outfit",sans-serif;font-weight:300;font-size:.26em;letter-spacing:.42em;opacity:.85;margin-top:1.1em}
+.hero-sub{font-size:1.05rem;opacity:.94;max-width:44ch;margin:.4em 0 0;font-weight:300}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.chip{
+  background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.28);
+  padding:9px 17px;border-radius:14px;font-size:.88rem;font-weight:500;backdrop-filter:blur(6px);
+}
+.chip b{font-weight:800}
+.countdown{
+  margin-top:34px;display:inline-flex;align-items:baseline;gap:12px;
+  background:rgba(255,255,255,.93);color:var(--ocean-d);
+  padding:15px 26px;border-radius:18px;box-shadow:var(--shadow-lg);
+}
+.countdown .n{font-family:"Outfit",sans-serif;font-size:2.6rem;font-weight:800;line-height:1;letter-spacing:-.02em}
+.countdown .t{font-size:.86rem;font-weight:600;letter-spacing:.06em}
+
+/* ---------- LAYOUT ---------- */
+main{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+section{margin:74px 0;scroll-margin-top:80px}
+.sec-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:26px;flex-wrap:wrap}
+.sec-head .ic{
+  width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:1.35rem;
+  background:linear-gradient(145deg,var(--aqua),var(--ocean));box-shadow:0 8px 20px rgba(11,110,127,.28)
+}
+h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
+.sec-head p{margin:0;color:var(--ink-soft);font-size:.9rem;padding-bottom:.35em}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;border:1px solid rgba(255,255,255,.7)}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(290px,100%),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(215px,100%),1fr))}
+
+/* ---------- INFO TILES ---------- */
+.tile{background:var(--card);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border-top:4px solid var(--aqua);transition:.25s}
+.tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.tile:nth-child(2){border-top-color:var(--sun)}
+.tile:nth-child(3){border-top-color:var(--coral)}
+.tile:nth-child(4){border-top-color:var(--ocean)}
+.tile .k{font-size:.74rem;letter-spacing:.18em;color:var(--ink-soft);font-weight:700;text-transform:uppercase}
+.tile .v{font-size:1.5rem;font-weight:800;margin:.2em 0 .1em;letter-spacing:-.01em}
+.tile .d{font-size:.85rem;color:var(--ink-soft)}
+
+/* ---------- FLIGHT ---------- */
+.flight{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
+  display:grid;grid-template-columns:1fr; border:1px solid rgba(255,255,255,.7);
+}
+.flight-top{
+  background:linear-gradient(115deg,var(--ocean-d),var(--ocean) 55%,var(--aqua));
+  color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap
+}
+.flight-top .no{font-family:"Outfit",sans-serif;font-weight:800;letter-spacing:.1em;font-size:1.05rem}
+.flight-top .tag{font-size:.78rem;background:rgba(255,255,255,.22);padding:4px 13px;border-radius:999px;font-weight:600}
+.route{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:26px 24px}
+.pt{text-align:center}
+.pt .code{font-family:"Outfit",sans-serif;font-size:2.1rem;font-weight:800;line-height:1;letter-spacing:.02em;color:var(--ocean-d)}
+.pt .time{font-size:1.5rem;font-weight:800;margin-top:4px;letter-spacing:-.01em}
+.pt .place{font-size:.82rem;color:var(--ink-soft);margin-top:2px}
+.path{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--aqua);min-width:96px}
+.path .line{width:100%;height:2px;background:repeating-linear-gradient(90deg,var(--ocean-l) 0 7px,transparent 7px 13px);position:relative}
+.path .line::after{content:"✈";position:absolute;right:-4px;top:-13px;font-size:1.1rem;color:var(--ocean)}
+.path .dur{font-size:.75rem;color:var(--ink-soft);font-weight:600;letter-spacing:.04em}
+.flight-note{border-top:1px dashed var(--line);padding:13px 24px;font-size:.84rem;color:var(--ink-soft);background:#fbfdfd}
+
+/* ---------- HOTEL ---------- */
+.hotel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.7)}
+.hotel::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(20,184,189,.07)}
+.hotel .nights{display:inline-block;background:var(--sand-d);color:var(--ocean-d);font-size:.76rem;font-weight:700;padding:4px 12px;border-radius:999px;letter-spacing:.04em}
+.hotel h3{margin:.55em 0 .1em;font-size:1.22rem;font-weight:800;letter-spacing:-.01em;position:relative}
+.hotel .en{font-family:"Outfit",sans-serif;font-size:.82rem;color:var(--ink-soft);letter-spacing:.02em}
+.hotel dl{margin:16px 0 0;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:.88rem;position:relative}
+.hotel dt{color:var(--ink-soft);font-weight:600;white-space:nowrap}
+.hotel dd{margin:0;overflow-wrap:anywhere}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;margin-top:18px;text-decoration:none;
+  background:var(--ocean);color:#fff;padding:9px 18px;border-radius:12px;font-size:.85rem;font-weight:600;
+  transition:.2s;box-shadow:0 6px 16px rgba(11,110,127,.25);position:relative
+}
+.btn:hover{background:var(--ocean-d);transform:translateY(-1px)}
+.btn.ghost{background:#fff;color:var(--ocean);border:1.5px solid var(--ocean);box-shadow:none;margin-left:8px}
+.btn.ghost:hover{background:rgba(20,184,189,.1)}
+
+/* ---------- MAP ---------- */
+.map-wrap{position:relative}
+.map-hint{display:none}
+#map{height:520px;border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:1;border:4px solid #fff}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.lg{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);padding:6px 14px;border-radius:999px;font-size:.82rem;font-weight:600;box-shadow:var(--shadow)}
+.dot{width:11px;height:11px;border-radius:50%;flex:none}
+.pin-ico{display:grid;place-items:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.3);font-size:14px}
+.pin-ico span{transform:rotate(45deg)}
+.leaflet-popup-content-wrapper{border-radius:14px}
+.leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;margin:14px 16px;font-size:.88rem;line-height:1.6}
+.leaflet-popup-content b{font-size:.98rem;display:block;margin-bottom:3px}
+.leaflet-popup-content a{font-weight:600;text-decoration:none}
+
+/* ---------- CHECKLIST ---------- */
+.packs{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(255px,100%),1fr))}
+.pack h3{margin:0 0 4px;font-size:1.05rem;display:flex;align-items:center;gap:9px;font-weight:800}
+.pack h3 em{font-style:normal;font-size:1.2rem}
+.bar{height:6px;background:var(--sand-d);border-radius:99px;overflow:hidden;margin:10px 0 14px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aqua),var(--ocean));border-radius:99px;transition:width .35s ease}
+.pack ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.pack li label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:6px 8px;border-radius:9px;font-size:.9rem;transition:.15s}
+.pack li label:hover{background:rgba(20,184,189,.07)}
+.pack input{appearance:none;width:19px;height:19px;flex:none;margin-top:3px;border:2px solid var(--ocean-l);border-radius:6px;cursor:pointer;transition:.18s;position:relative}
+.pack input:checked{background:var(--ocean);border-color:var(--ocean)}
+.pack input:checked::after{content:"✓";position:absolute;inset:0;color:#fff;font-size:12px;display:grid;place-items:center;font-weight:900}
+.pack input:checked + span{text-decoration:line-through;color:#a8bcc0}
+.reset{background:none;border:none;color:var(--ink-soft);font-size:.8rem;cursor:pointer;text-decoration:underline;padding:0;font-family:inherit}
+
+/* ---------- LINKS / TODO ---------- */
+.linkrow{display:flex;flex-wrap:wrap;gap:10px}
+.linkcard{
+  display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;background:#fff;
+  border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);transition:.2s;flex:1 1 250px
+}
+.linkcard:hover{transform:translateY(-2px);border-color:var(--aqua);box-shadow:var(--shadow-lg)}
+.linkcard em{font-style:normal;font-size:1.5rem}
+.linkcard b{display:block;font-size:.94rem;font-weight:700}
+.linkcard small{color:var(--ink-soft);font-size:.78rem}
+.soon{
+  border:2px dashed var(--ocean-l);background:rgba(255,255,255,.55);border-radius:var(--radius);
+  padding:40px 26px;text-align:center;color:var(--ink-soft)
+}
+.soon .big{font-size:2.2rem;display:block;margin-bottom:8px}
+.soon b{color:var(--ocean-d);font-size:1.05rem;display:block;margin-bottom:4px}
+.jp{display:grid;gap:10px}
+.jp .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:11px 16px;background:#fff;border-radius:13px;border:1px solid var(--line);font-size:.9rem}
+.jp .row b{font-weight:700;color:var(--ocean-d)}
+footer{text-align:center;padding:40px 20px 60px;color:var(--ink-soft);font-size:.84rem}
+footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;margin:0 auto 18px}
+/* ---------- 每日行程 ---------- */
+.daynav{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:2px 0 12px;-webkit-overflow-scrolling:touch}
+.daynav::-webkit-scrollbar{display:none}
+.daynav button{
+  flex:none;font-family:inherit;cursor:pointer;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);
+  border-radius:13px;padding:9px 15px;font-size:.84rem;font-weight:600;line-height:1.25;text-align:center;transition:.18s
+}
+.daynav button b{display:block;font-family:"Outfit",sans-serif;font-size:.95rem;color:var(--ocean-d)}
+.daynav button:hover{border-color:var(--aqua)}
+.daynav button.on{background:var(--ocean);border-color:var(--ocean);color:#fff}
+.daynav button.on b{color:#fff}
+.day{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid rgba(255,255,255,.7)}
+.day[hidden]{display:none}
+.day-head{background:linear-gradient(115deg,var(--ocean-d),var(--ocean) 60%,var(--aqua));color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.day-head .dn{font-family:"Outfit",sans-serif;font-size:1.6rem;font-weight:800;line-height:1}
+.day-head .dd{font-size:.95rem;font-weight:600}
+.day-head .dt{font-size:.78rem;opacity:.85}
+.day-head .stay{margin-left:auto;font-size:.76rem;background:rgba(255,255,255,.2);padding:5px 13px;border-radius:999px;font-weight:600}
+.slots{padding:8px 22px 20px}
+.slot{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.slot:last-child{border-bottom:none}
+.slot .when{font-size:.82rem;font-weight:700;color:var(--ocean);padding-top:3px}
+.slot .when small{display:block;font-weight:500;color:var(--ink-soft);font-size:.72rem;letter-spacing:.02em}
+.item{display:flex;gap:9px;align-items:flex-start;padding:5px 0;font-size:.92rem}
+.item .ie{font-size:1rem;line-height:1.5}
+.item .iname{font-weight:600}
+.item .inote{color:var(--ink-soft);font-size:.82rem}
+.item.fixed{background:rgba(255,192,67,.13);border-left:3px solid var(--sun);border-radius:0 9px 9px 0;padding:7px 11px;margin:3px 0}
+.empty-slot{color:#b9c9cc;font-size:.86rem;font-style:normal;padding:4px 0}
+/* ---------- 候選清單 ---------- */
+.pool{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr))}
+.pitem{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px 16px;box-shadow:var(--shadow);position:relative}
+.pitem h4{margin:0 0 3px;font-size:.96rem;font-weight:700;display:flex;align-items:center;gap:7px}
+.pitem .pnote{font-size:.82rem;color:var(--ink-soft);margin:0}
+.pitem .used{position:absolute;top:12px;right:12px;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--sand-d);color:var(--ocean-d)}
+.pitem .used.no{background:#eef4f5;color:#9ab0b4}
+.pitem a{display:inline-block;margin-top:8px;font-size:.78rem;text-decoration:none;font-weight:600}
+.pool-hint{font-size:.85rem;color:var(--ink-soft);margin:0 0 14px}
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+  .hero{padding:64px 20px 110px}
+  section{margin:60px 0}
+}
+@media(max-width:700px){
+  html{scroll-padding-top:66px}
+  body{line-height:1.7}
+  .nav-in{padding:9px 14px;gap:10px}
+  .brand{font-size:0;gap:0}
+  .brand i{font-size:1.35rem}
+  .nav-links a{font-size:.8rem;padding:6px 11px}
+  main{padding:0 14px 60px}
+  .hero{padding:44px 16px 92px}
+  .sun{width:200px;height:200px;top:-60px;right:-60px}
+  .hero-sub{font-size:.95rem}
+  .chip{font-size:.8rem;padding:7px 13px}
+  .countdown{width:100%;justify-content:center;padding:13px 20px;margin-top:26px}
+  .countdown .n{font-size:2.2rem}
+  section{margin:48px 0;scroll-margin-top:70px}
+  .sec-head{gap:11px;margin-bottom:18px;align-items:center}
+  .sec-head .ic{width:38px;height:38px;font-size:1.15rem;border-radius:12px}
+  h2{font-size:1.28rem}
+  .sec-head p{flex-basis:100%;padding-bottom:0;font-size:.82rem}
+  .card,.tile,.hotel{padding:18px}
+  /* 基本資料：手機兩欄 */
+  .g3{grid-template-columns:1fr 1fr;gap:12px}
+  .tile .v{font-size:1.12rem}
+  .tile .k{font-size:.66rem;letter-spacing:.12em}
+  .tile .d{font-size:.78rem}
+  /* 航班：維持登機證左右對照，縮字 */
+  .flight-top{padding:12px 16px}
+  .flight-top .no{font-size:.95rem}
+  .flight-top .tag{font-size:.72rem}
+  .route{padding:20px 14px;gap:6px}
+  .pt .code{font-size:1.5rem}
+  .pt .time{font-size:1.18rem}
+  .pt .place{font-size:.74rem}
+  .path{min-width:64px}
+  .path .dur{font-size:.68rem}
+  .flight-note{padding:11px 16px;font-size:.78rem}
+  /* 飯店 */
+  .hotel h3{font-size:1.08rem}
+  .hotel dl{grid-template-columns:1fr;gap:2px 0;font-size:.85rem}
+  .hotel dt{font-size:.74rem;letter-spacing:.06em;margin-top:8px}
+  .btn{width:100%;justify-content:center;margin-top:14px;padding:12px 18px}
+  .btn.ghost{margin-left:0;margin-top:9px}
+  /* 地圖 */
+  #map{height:62vh;min-height:340px;max-height:460px;border-width:3px}
+  .map-hint{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:600;
+    background:rgba(6,74,88,.82);color:#fff;padding:10px 20px;border-radius:999px;font-size:.85rem;font-weight:600;
+    pointer-events:none;opacity:0;transition:opacity .25s}
+  .map-hint.show{opacity:1}
+  .lg{font-size:.76rem;padding:5px 11px}
+  /* 清單 */
+  .pack li label{padding:9px 6px;font-size:.88rem}
+  .pack input{width:22px;height:22px}
+  .linkcard{flex:1 1 100%;padding:13px 15px}
+  .soon{padding:30px 18px;font-size:.88rem}
+  .day-head{padding:13px 16px;gap:10px}
+  .day-head .dn{font-size:1.3rem}
+  .day-head .dd{font-size:.88rem}
+  .day-head .stay{margin-left:0;flex-basis:100%;text-align:center}
+  .slots{padding:6px 16px 16px}
+  .slot{grid-template-columns:62px 1fr;gap:10px;padding:12px 0}
+  .slot .when{font-size:.78rem}
+  .daynav button{padding:8px 12px;font-size:.78rem}
+  .jp .row{grid-template-columns:1fr;gap:2px;padding:10px 14px}
+  footer{padding:30px 16px calc(40px + env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){
+  h1{font-size:2.15rem}
+  .g3{grid-template-columns:1fr}
+  .route{grid-template-columns:1fr;gap:14px}
+  .path{flex-direction:row;gap:10px;justify-content:center}
+  .path .line{width:90px}
+}
+@media(hover:none){
+  .tile:hover,.linkcard:hover,.btn:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+</style>
 </head>
-<body>正在開啟沖繩旅遊手冊… <a href="./%E6%B2%96%E7%B9%A9%E6%97%85%E9%81%8A%E6%89%8B%E5%86%8A.html">點此進入</a></body>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="brand"><i>🌺</i>OKINAWA 2026</div>
+    <div class="nav-links">
+      <a href="#info">基本資料</a>
+      <a href="#flight">航班</a>
+      <a href="#hotel">住宿</a>
+      <a href="#plan">行程</a>
+      <a href="#map-sec">地圖</a>
+      <a href="#spots">景點</a>
+      <a href="#food">美食</a>
+      <a href="#pack">行李</a>
+      <a href="#links">實用連結</a>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="sun"></div>
+  <div class="hero">
+    <span class="eyebrow">🏝 沖繩 · OKINAWA</span>
+    <h1>沖繩旅遊手冊<small>2 0 2 6 &nbsp;A U T U M N</small></h1>
+    <p class="hero-sub">碧海、古城與滿街的風獅爺。這份手冊會一路補到出發前，想到什麼就往下加。</p>
+    <div class="hero-meta">
+      <span class="chip">📅 <b>11/07</b> – <b>11/14</b></span>
+      <span class="chip">🌙 <b>7</b> 晚 8 天</span>
+      <span class="chip">✈️ 樂桃航空 Peach</span>
+      <span class="chip">🏨 名護 2 晚 ＋ 那霸 5 晚</span>
+    </div>
+    <div class="countdown">
+      <span class="n" id="cd">–</span><span class="t">天後出發</span>
+    </div>
+  </div>
+  <svg class="waves" viewBox="0 0 1440 110" preserveAspectRatio="none" height="110" width="100%">
+    <path fill="#f7efe2" fill-opacity=".45" d="M0,60 C240,110 480,10 720,50 C960,90 1200,20 1440,55 L1440,110 L0,110 Z"></path>
+    <path fill="#f7efe2" d="M0,80 C240,120 420,40 720,72 C1020,104 1200,50 1440,78 L1440,110 L0,110 Z"></path>
+  </svg>
+</header>
+
+<main>
+
+<!-- ============ 基本資料 ============ -->
+<section id="info">
+  <div class="sec-head">
+    <div class="ic">🧭</div>
+    <div><h2>旅行基本資料</h2></div>
+    <p>出發前掃一眼就好</p>
+  </div>
+  <div class="grid g3">
+    <div class="tile"><div class="k">Dates</div><div class="v">11/07 – 11/14</div><div class="d">六出發、六回台</div></div>
+    <div class="tile"><div class="k">Duration</div><div class="v">8 天 7 晚</div><div class="d">名護 2 晚 ＋ 那霸 5 晚</div></div>
+    <div class="tile"><div class="k">Weather</div><div class="v">22 – 27 ℃</div><div class="d">短袖為主，晚上帶件薄外套</div></div>
+    <div class="tile"><div class="k">Currency</div><div class="v">日圓 JPY</div><div class="d">現金 ＋ 信用卡並用</div></div>
+    <div class="tile"><div class="k">Time Zone</div><div class="v">與台灣同時區</div><div class="d">UTC+9 ／ 不用調時差</div></div>
+    <div class="tile"><div class="k">Power</div><div class="v">100V · A 型</div><div class="d">台灣插頭可直接用</div></div>
+  </div>
+</section>
+
+<!-- ============ 航班 ============ -->
+<section id="flight">
+  <div class="sec-head">
+    <div class="ic">✈️</div>
+    <div><h2>航班資訊</h2></div>
+    <p>樂桃航空 Peach Aviation</p>
+  </div>
+  <div class="grid g2">
+
+    <div class="flight">
+      <div class="flight-top"><span class="no">MM 922</span><span class="tag">去程 · 11/07（六）</span></div>
+      <div class="route">
+        <div class="pt"><div class="code">TPE</div><div class="time">09:45</div><div class="place">桃園國際機場</div></div>
+        <div class="path"><div class="line"></div><div class="dur">約 1h40m</div></div>
+        <div class="pt"><div class="code">OKA</div><div class="time">12:25</div><div class="place">那霸機場</div></div>
+      </div>
+      <div class="flight-note">⏰ 提前 <b>2.5 小時</b> 報到掛行李 → 約 <b>07:15</b> 抵達機場</div>
+    </div>
+
+    <div class="flight">
+      <div class="flight-top"><span class="no">MM 929</span><span class="tag">回程 · 11/14（六）</span></div>
+      <div class="route">
+        <div class="pt"><div class="code">OKA</div><div class="time">16:50</div><div class="place">那霸機場</div></div>
+        <div class="path"><div class="line"></div><div class="dur">約 1h45m</div></div>
+        <div class="pt"><div class="code">TPE</div><div class="time">17:35</div><div class="place">桃園國際機場</div></div>
+      </div>
+      <div class="flight-note">🛍 最後一天可安排國際線航廈免稅店採買，留 2 小時</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 住宿 ============ -->
+<section id="hotel">
+  <div class="sec-head">
+    <div class="ic">🏨</div>
+    <div><h2>住宿資訊</h2></div>
+    <p>前段海邊度假、後段市區逛街</p>
+  </div>
+  <div class="grid g2">
+
+    <div class="hotel">
+      <span class="nights">11/07 – 11/09 ｜ 2 晚</span>
+      <h3>沖繩名戶海灘貝斯特韋斯特酒店</h3>
+      <div class="en">Best Western Okinawa Kouki Beach</div>
+      <dl>
+        <dt>地址</dt><dd>沖縄県名護市幸喜 117</dd>
+        <dt>區域</dt><dd>名護市 · 西海岸（國道 58 號旁）</dd>
+        <dt>交通</dt><dd>距那霸機場約 60 分鐘車程</dd>
+        <dt>特色</dt><dd>全客房面海、房間附私人陽台</dd>
+      </dl>
+      <a class="btn" target="_blank" rel="noopener"
+         href="https://www.google.com/maps/search/?api=1&query=Best+Western+Okinawa+Kouki+Beach+%E6%B2%96%E7%B8%84%E7%9C%8C%E5%90%8D%E8%AD%B7%E5%B8%82%E5%B9%B8%E5%96%9C117">📍 Google 地圖</a>
+    </div>
+
+    <div class="hotel">
+      <span class="nights">11/09 – 11/14 ｜ 5 晚</span>
+      <h3>那霸縣廳前阿爾蒙特酒店</h3>
+      <div class="en">Almont Hotel Naha Kenchomae</div>
+      <dl>
+        <dt>地址</dt><dd>〒900-0015 沖縄県那覇市久茂地 1-3-5</dd>
+        <dt>區域</dt><dd>那霸市區 · 國際通西端</dd>
+        <dt>交通</dt><dd>單軌電車「県庁前」站步行約 3 分鐘</dd>
+        <dt>電話</dt><dd>098-866-3811</dd>
+      </dl>
+      <a class="btn" target="_blank" rel="noopener"
+         href="https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%AB%E3%83%A2%E3%83%B3%E3%83%88%E3%83%9B%E3%83%86%E3%83%AB%E9%82%A3%E8%A6%87%E7%9C%8C%E5%BA%81%E5%89%8D+%E6%B2%96%E7%B8%84%E7%9C%8C%E9%82%A3%E8%A6%87%E5%B8%82%E4%B9%85%E8%8C%82%E5%9C%B01-3-5">📍 Google 地圖</a>
+      <a class="btn ghost" target="_blank" rel="noopener" href="https://www.almont.jp/naha/access.html">官網交通</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 每日行程 ============ -->
+<section id="plan">
+  <div class="sec-head">
+    <div class="ic">📅</div>
+    <div><h2>每日行程</h2></div>
+    <p>8 天框架，內容陸續填</p>
+  </div>
+  <div class="daynav" id="daynav"></div>
+  <div id="days"></div>
+</section>
+
+<!-- ============ 地圖 ============ -->
+<section id="map-sec">
+  <div class="sec-head">
+    <div class="ic">🗺</div>
+    <div><h2>沖繩地圖</h2></div>
+    <p>點圖釘看詳細資訊 · 可縮放拖曳</p>
+  </div>
+  <div class="map-wrap"><div id="map"></div><div class="map-hint" id="mapHint">用兩指移動地圖</div></div>
+  <div class="legend">
+    <span class="lg"><i class="dot" style="background:#ff7a5c"></i>機場</span>
+    <span class="lg"><i class="dot" style="background:#0b6e7f"></i>飯店</span>
+    <span class="lg"><i class="dot" style="background:#14b8bd"></i>景點</span>
+    <span class="lg"><i class="dot" style="background:#ffc043"></i>美食</span>
+    <span class="lg" style="background:var(--sand-d);border:none">✏️ 景點與餐廳陸續補上</span>
+  </div>
+</section>
+
+<!-- ============ 景點 ============ -->
+<section id="spots">
+  <div class="sec-head">
+    <div class="ic">📸</div>
+    <div><h2>想去的景點</h2></div>
+    <p>大家隨時提議</p>
+  </div>
+  <p class="pool-hint">這裡收集<b>所有</b>想去的地方，沒排進每日行程的就是備選，臨時變天或有空檔可以直接從這裡挑。</p>
+  <div class="pool" id="poolSpot"></div>
+</section>
+
+<!-- ============ 美食 ============ -->
+<section id="food">
+  <div class="sec-head">
+    <div class="ic">🍜</div>
+    <div><h2>想吃的餐廳</h2></div>
+    <p>沖繩麵、Agu 豬、海葡萄…</p>
+  </div>
+  <p class="pool-hint">同樣是全部候選，沒排進行程的當備案。需要訂位的記得註記。</p>
+  <div class="pool" id="poolFood"></div>
+</section>
+
+<!-- ============ 行李 ============ -->
+<section id="pack">
+  <div class="sec-head">
+    <div class="ic">🧳</div>
+    <div><h2>行前準備</h2></div>
+    <p>打勾會自動記在你自己的裝置上</p>
+  </div>
+  <div class="packs" id="packs">
+    <div class="card pack" data-key="valuable">
+      <h3><em>💎</em>貴重物品</h3>
+      <div class="bar"><i></i></div>
+      <ul>
+        <li><label><input type="checkbox"><span>護照（效期 6 個月以上）</span></label></li>
+        <li><label><input type="checkbox"><span>電子機票</span></label></li>
+        <li><label><input type="checkbox"><span>日幣現金</span></label></li>
+        <li><label><input type="checkbox"><span>信用卡</span></label></li>
+        <li><label><input type="checkbox"><span>海外旅遊平安險</span></label></li>
+        <li><label><input type="checkbox"><span>護照備用照片</span></label></li>
+        <li><label><input type="checkbox"><span>緊急聯絡電話</span></label></li>
+        <li><label><input type="checkbox"><span>Visit Japan Web QR Code</span></label></li>
+      </ul>
+    </div>
+    <div class="card pack" data-key="luggage">
+      <h3><em>🎒</em>行李</h3>
+      <div class="bar"><i></i></div>
+      <ul>
+        <li><label><input type="checkbox"><span>旅遊背包</span></label></li>
+        <li><label><input type="checkbox"><span>貼身袋</span></label></li>
+        <li><label><input type="checkbox"><span>軟包</span></label></li>
+        <li><label><input type="checkbox"><span>衣物（含一件薄外套）</span></label></li>
+        <li><label><input type="checkbox"><span>牙刷、牙膏</span></label></li>
+        <li><label><input type="checkbox"><span>日常保養</span></label></li>
+        <li><label><input type="checkbox"><span>防曬</span></label></li>
+        <li><label><input type="checkbox"><span>日常保健品</span></label></li>
+        <li><label><input type="checkbox"><span>泳衣／海邊用品</span></label></li>
+      </ul>
+    </div>
+    <div class="card pack" data-key="tech">
+      <h3><em>🔌</em>電器</h3>
+      <div class="bar"><i></i></div>
+      <ul>
+        <li><label><input type="checkbox"><span>充電器</span></label></li>
+        <li><label><input type="checkbox"><span>行動電源（限隨身行李）</span></label></li>
+        <li><label><input type="checkbox"><span>eSIM ／ 網路卡</span></label></li>
+        <li><label><input type="checkbox"><span>各式充電線</span></label></li>
+        <li><label><input type="checkbox"><span>相機、記憶卡</span></label></li>
+      </ul>
+    </div>
+  </div>
+  <p style="text-align:right;margin-top:14px"><button class="reset" id="reset">清空全部勾選</button></p>
+</section>
+
+<!-- ============ 實用連結 ============ -->
+<section id="links">
+  <div class="sec-head">
+    <div class="ic">🔗</div>
+    <div><h2>實用連結</h2></div>
+  </div>
+  <div class="linkrow">
+    <a class="linkcard" target="_blank" rel="noopener" href="https://www.vjw.digital.go.jp/main/#/vjwplo001">
+      <em>🛂</em><span><b>Visit Japan Web</b><small>入境審查 ／ 海關申報 QR</small></span></a>
+    <a class="linkcard" target="_blank" rel="noopener" href="https://b2c.518fb.com/TravelHouseKeeper/login#">
+      <em>🛡</em><span><b>旅行保險</b><small>投保與保單查詢</small></span></a>
+    <a class="linkcard" target="_blank" rel="noopener" href="https://www.flypeach.com/">
+      <em>✈️</em><span><b>樂桃航空</b><small>線上報到 ／ 航班動態</small></span></a>
+    <a class="linkcard" target="_blank" rel="noopener" href="https://www.yui-rail.co.jp/tc/">
+      <em>🚝</em><span><b>沖繩單軌電車 Yui Rail</b><small>那霸市區主要交通</small></span></a>
+  </div>
+
+  <div class="sec-head" style="margin-top:44px">
+    <div class="ic">🈯</div>
+    <div><h2>救急日文</h2></div>
+  </div>
+  <div class="jp">
+    <div class="row"><b>すみません（Sumimasen）</b><span>不好意思／麻煩一下</span></div>
+    <div class="row"><b>お会計お願いします</b><span>麻煩結帳</span></div>
+    <div class="row"><b>これください</b><span>我要這個</span></div>
+    <div class="row"><b>〇人です</b><span>我們 〇 位</span></div>
+    <div class="row"><b>免税できますか？</b><span>可以免稅嗎？</span></div>
+    <div class="row"><b>トイレはどこですか？</b><span>廁所在哪裡？</span></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="ln"></div>
+  沖繩旅遊手冊 · 2026.11.07 – 11.14<br>
+  <small>資料持續更新中 ｜ 地圖圖釘位置為概略位置，實際導航請點 Google 地圖連結</small>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* =========================================================
+   地點資料 — 之後新增景點／餐廳，只要在這裡加一筆就好
+   type: airport（機場）/ hotel（飯店）/ spot（景點）/ food（美食）
+   ========================================================= */
+const PLACES = [
+  { type:"airport", name:"那霸機場 OKA", lat:26.1958, lng:127.6458,
+    note:"去程 11/07 12:25 抵達 ／ 回程 11/14 16:50 起飛" },
+
+  { type:"hotel", name:"Best Western 名戶海灘酒店", lat:26.5646, lng:127.9891,
+    note:"11/07–11/09（2 晚）<br>沖縄県名護市幸喜117" },
+
+  { type:"hotel", name:"Almont Hotel 那霸県庁前", lat:26.2148, lng:127.6796,
+    note:"11/09–11/14（5 晚）<br>那覇市久茂地1-3-5 ／ 県庁前站步行 3 分" },
+
+  /* ---- 之後補景點／餐廳，照下面格式加就好 ----
+  { type:"spot", name:"美麗海水族館", lat:26.6941, lng:127.8780, note:"建議停留 3 小時" },
+  { type:"food", name:"某某沖繩麵", lat:26.2150, lng:127.6870, note:"需訂位" },
+  ------------------------------------------------ */
+];
+
+/* =========================================================
+   每日行程 — 想排行程就在對應那天的時段 items 裡加一筆
+   { name:"名稱", note:"備註（可省略）", emo:"圖示（可省略）", fixed:true（固定行程，會highlight）}
+   name 若與 PLACES 裡的地點同名，候選清單會自動標成「已排入」
+   ========================================================= */
+const DAYS = [
+  { d:"11/07", w:"六", stay:"名護 Best Western", slots:[
+      { t:"上午", s:"MORNING", items:[
+        { emo:"✈️", name:"07:15 抵達桃園機場", note:"MM922 09:45 起飛", fixed:true }]},
+      { t:"中午", s:"NOON", items:[
+        { emo:"🛬", name:"12:25 抵達那霸機場", note:"入境、領行李、取車或搭車北上", fixed:true }]},
+      { t:"下午", s:"AFTERNOON", items:[] },
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+  { d:"11/08", w:"日", stay:"名護 Best Western", slots:[
+      { t:"上午", s:"MORNING", items:[] },
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[] },
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+  { d:"11/09", w:"一", stay:"那霸 Almont（換飯店）", slots:[
+      { t:"上午", s:"MORNING", items:[
+        { emo:"🧳", name:"名護飯店退房", note:"行李帶著，下午進那霸", fixed:true }]},
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[
+        { emo:"🏨", name:"入住 Almont 那霸県庁前", note:"5 晚，之後都住這", fixed:true }]},
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+  { d:"11/10", w:"二", stay:"那霸 Almont", slots:[
+      { t:"上午", s:"MORNING", items:[] },
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[] },
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+  { d:"11/11", w:"三", stay:"那霸 Almont", slots:[
+      { t:"上午", s:"MORNING", items:[] },
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[] },
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+  { d:"11/12", w:"四", stay:"那霸 Almont", slots:[
+      { t:"上午", s:"MORNING", items:[] },
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[] },
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+  { d:"11/13", w:"五", stay:"那霸 Almont", slots:[
+      { t:"上午", s:"MORNING", items:[] },
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[] },
+      { t:"晚上", s:"EVENING", items:[
+        { emo:"🧺", name:"整理行李、買最後的伴手禮", note:"隔天下午班機", fixed:true }]},
+  ]},
+  { d:"11/14", w:"六", stay:"—（回台）", slots:[
+      { t:"上午", s:"MORNING", items:[
+        { emo:"🧳", name:"飯店退房", note:"可寄放行李再逛一下", fixed:true }]},
+      { t:"中午", s:"NOON", items:[] },
+      { t:"下午", s:"AFTERNOON", items:[
+        { emo:"✈️", name:"14:50 抵達那霸機場", note:"MM929 16:50 起飛 → 17:35 桃園", fixed:true }]},
+      { t:"晚上", s:"EVENING", items:[] },
+  ]},
+];
+
+const STYLE = {
+  airport:{ c:"#ff7a5c", e:"✈️" },
+  hotel:  { c:"#0b6e7f", e:"🏨" },
+  spot:   { c:"#14b8bd", e:"📸" },
+  food:   { c:"#ffc043", e:"🍜" }
+};
+
+const isTouch = window.matchMedia("(max-width:700px)").matches;
+const map = L.map("map", { scrollWheelZoom:false, dragging:!isTouch, tap:true }).setView([26.45, 127.85], 9);
+if (isTouch) {
+  map.dragging.disable();
+  const hint = document.getElementById("mapHint");
+  const el = map.getContainer();
+  el.addEventListener("touchstart", e => {
+    if (e.touches.length > 1) { map.dragging.enable(); hint.classList.remove("show"); }
+    else { map.dragging.disable(); hint.classList.add("show"); setTimeout(()=>hint.classList.remove("show"), 1400); }
+  }, { passive:true });
+}
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom:19
+}).addTo(map);
+map.on("click", () => map.scrollWheelZoom.enable());
+
+const bounds = [];
+PLACES.forEach(p => {
+  const s = STYLE[p.type] || STYLE.spot;
+  const icon = L.divIcon({
+    className:"", iconSize:[32,32], iconAnchor:[16,32], popupAnchor:[0,-30],
+    html:`<div class="pin-ico" style="width:30px;height:30px;background:${s.c}"><span>${s.e}</span></div>`
+  });
+  const q = encodeURIComponent(p.name + " 沖縄");
+  L.marker([p.lat, p.lng], { icon })
+   .addTo(map)
+   .bindPopup(`<b>${p.name}</b>${p.note ? p.note + "<br>" : ""}
+     <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>`);
+  bounds.push([p.lat, p.lng]);
+});
+if (bounds.length > 1) map.fitBounds(bounds, { padding: isTouch ? [30,30] : [55,55] });
+
+/* ---------- 每日行程渲染 ---------- */
+const dayNav = document.getElementById("daynav");
+const dayBox = document.getElementById("days");
+const planned = new Set();                       // 已排進行程的地點名稱
+
+DAYS.forEach((day, i) => {
+  const btn = document.createElement("button");
+  btn.innerHTML = `<b>Day ${i+1}</b>${day.d}（${day.w}）`;
+  btn.addEventListener("click", () => showDay(i));
+  dayNav.appendChild(btn);
+
+  const card = document.createElement("div");
+  card.className = "day";
+  card.hidden = true;
+  const slots = day.slots.map(sl => {
+    const rows = sl.items.map(it => {
+      if (it.name) planned.add(it.name);
+      return `<div class="item${it.fixed ? " fixed" : ""}">
+        <span class="ie">${it.emo || "•"}</span>
+        <span><span class="iname">${it.name}</span>${it.note ? `<br><span class="inote">${it.note}</span>` : ""}</span>
+      </div>`;
+    }).join("") || `<div class="empty-slot">— 待安排 —</div>`;
+    return `<div class="slot"><div class="when">${sl.t}<small>${sl.s}</small></div><div>${rows}</div></div>`;
+  }).join("");
+  card.innerHTML = `<div class="day-head">
+      <span class="dn">Day ${i+1}</span>
+      <span><span class="dd">${day.d}（${day.w}）</span><br><span class="dt">2026</span></span>
+      <span class="stay">🛏 ${day.stay}</span>
+    </div><div class="slots">${slots}</div>`;
+  dayBox.appendChild(card);
+});
+
+function showDay(i){
+  [...dayBox.children].forEach((c, n) => c.hidden = n !== i);
+  [...dayNav.children].forEach((b, n) => b.classList.toggle("on", n === i));
+}
+
+/* 預設顯示：旅程中顯示當天，其餘顯示 Day 1 */
+(function initDay(){
+  const today = new Date(), y = today.getFullYear();
+  let idx = 0;
+  DAYS.forEach((d, i) => {
+    const [m, dd] = d.d.split("/").map(Number);
+    if (y === 2026 && today.getMonth() + 1 === m && today.getDate() === dd) idx = i;
+  });
+  showDay(idx);
+})();
+
+/* ---------- 景點／美食候選清單 ---------- */
+function renderPool(type, el){
+  const list = PLACES.filter(p => p.type === type);
+  if (!list.length) {
+    el.innerHTML = `<div class="soon" style="grid-column:1/-1">
+      <span class="big">${type === "spot" ? "🐠" : "🍽"}</span>
+      <b>還在蒐集中</b>想到就丟進來，會同時出現在地圖和這裡。</div>`;
+    return;
+  }
+  el.innerHTML = list.map(p => {
+    const on = planned.has(p.name);
+    return `<div class="pitem">
+      <span class="used ${on ? "" : "no"}">${on ? "已排入行程" : "備選"}</span>
+      <h4>${STYLE[p.type].e} ${p.name}</h4>
+      ${p.note ? `<p class="pnote">${p.note.replace(/<br>/g, " · ")}</p>` : ""}
+      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + " 沖縄")}"
+         target="_blank" rel="noopener">在地圖開啟 →</a>
+    </div>`;
+  }).join("");
+}
+renderPool("spot", document.getElementById("poolSpot"));
+renderPool("food", document.getElementById("poolFood"));
+
+/* ---------- 倒數 ---------- */
+const dep = new Date("2026-11-07T00:00:00+08:00");
+const ret = new Date("2026-11-14T23:59:00+08:00");
+const now = new Date();
+const cdN = document.getElementById("cd");
+const cdT = document.querySelector(".countdown .t");
+if (now < dep) {
+  cdN.textContent = Math.ceil((dep - now) / 86400000);
+  cdT.textContent = "天後出發";
+} else if (now <= ret) {
+  cdN.textContent = Math.floor((now - dep) / 86400000) + 1;
+  cdT.textContent = "旅程進行中 · 第 N 天".replace("N", "");
+  cdT.textContent = "旅程進行中";
+} else {
+  cdN.textContent = "🌺";
+  cdT.textContent = "旅程已結束，辛苦了";
+}
+
+/* ---------- 行李清單（存 localStorage） ---------- */
+document.querySelectorAll(".pack").forEach(pack => {
+  const key = "oki26-" + pack.dataset.key;
+  const boxes = [...pack.querySelectorAll("input")];
+  const bar = pack.querySelector(".bar i");
+  const saved = JSON.parse(localStorage.getItem(key) || "[]");
+  boxes.forEach((b, i) => b.checked = !!saved[i]);
+  const sync = () => {
+    localStorage.setItem(key, JSON.stringify(boxes.map(b => b.checked)));
+    bar.style.width = (boxes.filter(b => b.checked).length / boxes.length * 100) + "%";
+  };
+  boxes.forEach(b => b.addEventListener("change", sync));
+  sync();
+});
+document.getElementById("reset").addEventListener("click", () => {
+  document.querySelectorAll(".pack input").forEach(b => { b.checked = false; b.dispatchEvent(new Event("change")); });
+});
+
+/* ---------- 導覽列：捲動後加陰影 ---------- */
+const navEl = document.querySelector("nav");
+const onScroll = () => navEl.classList.toggle("stuck", window.scrollY > 10);
+window.addEventListener("scroll", onScroll, { passive:true });
+onScroll();
+
+/* ---------- 導覽列 highlight ---------- */
+const links = [...document.querySelectorAll(".nav-links a")];
+const secs = links.map(a => document.querySelector(a.getAttribute("href")));
+let pending = null;   // 點選後鎖定，直到目標區塊真的捲到定位
+
+function centerInNav(a){
+  const bar = a.parentElement;
+  if (bar.scrollWidth <= bar.clientWidth + 2) return;      // 沒有溢出就不用動
+  if (a === bar.firstElementChild) { bar.scrollTo({ left:0, behavior:"smooth" }); return; }
+  const left = a.offsetLeft, right = left + a.offsetWidth;
+  const viewL = bar.scrollLeft, viewR = viewL + bar.clientWidth;
+  if (left >= viewL + 12 && right <= viewR - 12) return;   // 已在視野內就不捲
+  bar.scrollTo({ left: left - bar.clientWidth / 2 + a.offsetWidth / 2, behavior:"smooth" });
+}
+function mark(i){
+  links.forEach((l, n) => l.classList.toggle("on", n === i));
+  if (links[i]) centerInNav(links[i]);
+}
+function setActive(){
+  const navH = navEl.offsetHeight + 24;                    // 以導覽列下緣為判斷線
+  let idx = 0;
+  secs.forEach((sec, i) => {
+    if (sec && sec.getBoundingClientRect().top <= navH) idx = i;
+  });
+  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4)
+    idx = links.length - 1;                                // 捲到底 = 最後一節
+
+  if (pending !== null) {                                  // 捲動途中維持點選項目
+    const t = secs[pending];
+    const arrived = idx === pending || (t && t.getBoundingClientRect().top <= navH + 30);
+    if (!arrived) { mark(pending); return; }
+    pending = null;
+  }
+  mark(idx);
+}
+links.forEach((a, i) => a.addEventListener("click", () => { pending = i; mark(i); }));
+["wheel","touchstart","keydown"].forEach(ev =>
+  window.addEventListener(ev, () => { pending = null; }, { passive:true }));
+window.addEventListener("scroll", setActive, { passive:true });
+window.addEventListener("resize", setActive);
+setActive();
+</script>
+</body>
 </html>
