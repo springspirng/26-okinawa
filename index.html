@@ -256,6 +256,35 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .pitem .used.no{background:#eef4f5;color:#9ab0b4}
 .pitem a{display:inline-block;margin-top:8px;font-size:.78rem;text-decoration:none;font-weight:600}
 .pool-hint{font-size:.85rem;color:var(--ink-soft);margin:0 0 14px}
+/* ---------- 詳細彈窗 ---------- */
+.modal-bg{position:fixed;inset:0;z-index:2000;background:rgba(6,40,48,.55);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
+.modal-bg.open{opacity:1;pointer-events:auto}
+.modal{background:var(--card);border-radius:22px;max-width:560px;width:100%;max-height:86vh;overflow-y:auto;
+  box-shadow:0 30px 80px rgba(6,74,88,.4);transform:translateY(14px) scale(.98);transition:transform .22s;-webkit-overflow-scrolling:touch}
+.modal-bg.open .modal{transform:none}
+.modal-head{padding:22px 24px 18px;color:#fff;position:relative}
+.modal-head .kind{font-size:.72rem;font-weight:700;letter-spacing:.16em;opacity:.9;text-transform:uppercase}
+.modal-head h3{margin:6px 0 0;font-size:1.35rem;font-weight:800;line-height:1.3;padding-right:36px}
+.modal-x{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
+  background:rgba(255,255,255,.22);color:#fff;font-size:1.1rem;line-height:1;font-family:inherit;transition:.18s}
+.modal-x:hover{background:rgba(255,255,255,.38)}
+.modal-body{padding:20px 24px 24px}
+.modal-desc{font-size:.94rem;line-height:1.85;margin:0 0 18px}
+.facts{display:grid;gap:8px;margin:0 0 20px}
+.fact{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:.86rem;background:#f7fbfb;border-radius:11px;padding:9px 13px}
+.fact b{color:var(--ocean);font-weight:700;white-space:nowrap}
+.modal h4{margin:0 0 10px;font-size:.8rem;letter-spacing:.14em;color:var(--ink-soft);font-weight:700}
+.links{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr))}
+.links a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);background:#fff;
+  border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:.85rem;font-weight:600;transition:.18s}
+.links a:hover{border-color:var(--aqua);background:rgba(20,184,189,.06);transform:translateY(-1px)}
+.links a.primary{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.links a.primary:hover{background:var(--ocean-d)}
+.links em{font-style:normal;font-size:1.05rem}
+.pitem{cursor:pointer}
+.pitem:hover{border-color:var(--aqua);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.pitem .more{display:inline-block;margin-top:9px;font-size:.78rem;font-weight:700;color:var(--ocean)}
 /* ---------- RESPONSIVE ---------- */
 @media(max-width:900px){
   .hero{padding:64px 20px 110px}
@@ -315,6 +344,12 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
   .pack input{width:22px;height:22px}
   .linkcard{flex:1 1 100%;padding:13px 15px}
   .soon{padding:30px 18px;font-size:.88rem}
+  .modal-bg{padding:0;align-items:flex-end}
+  .modal{max-height:92vh;border-radius:22px 22px 0 0}
+  .modal-head{padding:18px 18px 15px}
+  .modal-head h3{font-size:1.15rem}
+  .modal-body{padding:16px 18px calc(22px + env(safe-area-inset-bottom))}
+  .links{grid-template-columns:1fr}
   .day-head{padding:13px 16px;gap:10px}
   .day-head .dn{font-size:1.3rem}
   .day-head .dd{font-size:.88rem}
@@ -635,6 +670,22 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
   <small>資料持續更新中 ｜ 地圖圖釘位置為概略位置，實際導航請點 Google 地圖連結</small>
 </footer>
 
+<div class="modal-bg" id="modalBg">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="modal-head" id="mHead">
+      <div class="kind" id="mKind"></div>
+      <h3 id="mTitle"></h3>
+      <button class="modal-x" id="mClose" aria-label="關閉">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc" id="mDesc"></p>
+      <div class="facts" id="mFacts"></div>
+      <h4>相關連結</h4>
+      <div class="links" id="mLinks"></div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* =========================================================
@@ -644,149 +695,281 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 const PLACES = [
   /* ---- 機場 ---- */
   { type:"airport", name:"那霸機場 OKA", lat:26.19615, lng:127.6458,
-    note:"去程11/07 12:25抵達｜回程11/14 16:50起飛" },
+    note:"去程11/07 12:25抵達｜回程11/14 16:50起飛",
+    desc:"去程 11/07 12:25 抵達，回程 11/14 16:50 起飛。國內線 3 樓有 A&W。2026/11 起免稅新制上路，退稅要在託運行李前到稅關確認，記得提早到。",
+    site:"https://www.naha-airport.co.jp/" },
 
   /* ---- 飯店 ---- */
   { type:"hotel", name:"Best Western 名戶海灘酒店", lat:26.540105, lng:127.949226,
-    note:"11/07-11/09(2晚)｜⚠️不供應晚餐" },
+    note:"11/07-11/09(2晚)｜⚠️不供應晚餐",
+    desc:"11/07–11/09 兩晚。全客房面海、附私人陽台，位置在名護市幸喜、國道 58 號旁。注意 2024/3 起已停止供應晚餐，只剩早餐，兩晚都要外出吃。",
+    site:"https://egh-okinawa.com/kouki/" },
   { type:"hotel", name:"Almont Hotel 那霸県庁前", lat:26.213243, lng:127.678139,
-    note:"11/09-11/14(5晚)｜県庁前站步行3分｜098-866-3811" },
+    note:"11/09-11/14(5晚)｜県庁前站步行3分｜098-866-3811",
+    desc:"11/09–11/14 五晚。單軌県庁前站走路 3 分鐘，國際通西端，去哪都方便。電話 098-866-3811。",
+    site:"https://www.almont.jp/naha/" },
 
   /* ---- 景點 ---- */
   { type:"spot", name:"沖繩美麗海水族館", lat:26.694369, lng:127.878038,
-    note:"8:30-18:30(入館至17:30)｜大人¥2180｜停留2.5-3.5h｜⚠️每週三為部分開園日" },
+    note:"8:30-18:30(入館至17:30)｜大人¥2180｜停留2.5-3.5h｜⚠️每週三為部分開園日",
+    desc:"沖繩的招牌景點。核心是「黑潮之海」大水槽，養著鯨鯊與鬼蝠魟，可以看餵食解說；另有海豚劇場、海龜館。隔壁海洋博公園、翡翠海灘、熱帶夢想中心可以一起排半天以上。",
+    site:"https://churaumi.okinawa/" },
   { type:"spot", name:"古宇利島・古宇利大橋", lat:26.701021, lng:128.020002,
-    note:"全天｜免費(停車¥100起)｜停留1.5-3h｜心形岩看退潮時間" },
+    note:"全天｜免費(停車¥100起)｜停留1.5-3h｜心形岩看退潮時間",
+    desc:"開上約 2 公里的跨海大橋就是全程重點，兩側都是透明度極高的海。島北側「ティーヌ浜」有網美必拍的心形岩，受潮汐影響大，去之前查一下退潮時間。",
+    site:"https://www.nakijinson.jp/" },
   { type:"spot", name:"今歸仁城跡", lat:26.692208, lng:127.927919,
-    note:"8:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產" },
+    note:"8:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產",
+    desc:"琉球三大城跡之一，世界遺產。城牆沿著山脊蜿蜒起伏，登上高處可以遠眺東海，11 月乾季天氣穩定很好拍。門票含今歸仁村歷史文化中心。",
+    site:"https://www.nakijinjoseki-osi.jp/" },
   { type:"spot", name:"備瀨福木林道", lat:26.703044, lng:127.884389,
-    note:"全天(住宅區請安靜)｜免費｜停留30分-1h｜距水族館車程3分" },
+    note:"全天(住宅區請安靜)｜免費｜停留30分-1h｜距水族館車程3分",
+    desc:"沖繩僅存規模最大的福木防風林，形成一條綠色隧道，常被電影廣告取景。可以租腳踏車繞，走到底就是海。距美麗海水族館開車只要 3 分鐘，很適合接在水族館後面。",
+    site:"https://www.okinawastory.jp/spot/1348" },
   { type:"spot", name:"瀬底海灘", lat:26.646855, lng:127.817452,
-    note:"沙灘全天｜免費(停車¥1000/日)｜11月已無救生員" },
+    note:"沙灘全天｜免費(停車¥1000/日)｜11月已無救生員",
+    desc:"本島數一數二透明的天然白沙灘，可以遠眺伊江島與水納島，夕陽很美。11 月已過救生員監視期，建議純散步看海，不要下水。",
+    site:"https://www.sesokobeach.jp/" },
   { type:"spot", name:"名護鳳梨園", lat:26.616574, lng:127.970852,
-    note:"10:00-18:00｜大人¥1500｜停留1-1.5h｜雨天備案" },
+    note:"10:00-18:00｜大人¥1500｜停留1-1.5h｜雨天備案",
+    desc:"搭鳳梨造型的自動導覽車遊園，有鳳梨吃到飽試吃與鳳梨酒試飲，伴手禮齊全。離名護飯店只要 15–20 分鐘，是下雨天的好備案。",
+    site:"https://www.nagopine.com/" },
   { type:"spot", name:"21世紀之森海灘", lat:26.599579, lng:127.972481,
-    note:"9:00-21:00｜免費｜傍晚看夕陽" },
+    note:"9:00-21:00｜免費｜傍晚看夕陽",
+    desc:"名護市區旁的人工白沙灘，名護灣浪平穩，傍晚看夕陽很舒服。11 月非游泳期，當作散步放空的地方。",
+    site:"https://nagomun.or.jp/facility/1195/" },
   { type:"spot", name:"ASMUI(原大石林山)", lat:26.845449, lng:128.259018,
-    note:"9:30-17:30｜大人¥2500｜停留1.5-2.5h｜2024/12改名" },
+    note:"9:30-17:30｜大人¥2500｜停留1.5-2.5h｜2024/12改名",
+    desc:"沖繩最北端的琉球石灰岩喀斯特地形，奇岩巨石與亞熱帶原始林步道，也是琉球神話的聖地。步道分 30 分鐘到 2 小時多種路線。注意 2024 年 12 月已從「大石林山」改名，導航要搜新名字。",
+    site:"https://asmui.com/" },
   { type:"spot", name:"比地大瀑布", lat:26.71357, lng:128.197449,
-    note:"11月起冬季9:00-15:00｜大人¥500｜往返1.5-2h｜需涉溪穿防滑鞋" },
+    note:"11月起冬季9:00-15:00｜大人¥500｜往返1.5-2h｜需涉溪穿防滑鞋",
+    desc:"沖繩本島最大的瀑布，落差 25.7 公尺。單程約 40 分鐘的山徑要涉溪與攀爬，記得穿防滑鞋。11 月起冬季時段 15:00 就停止售票，要早點出發。",
+    site:"https://yambaru3-kanko.com/kunigamison/516/" },
   { type:"spot", name:"萬座毛", lat:26.505009, lng:127.850256,
-    note:"11-2月 8:00-19:00｜¥100｜停留30-45分｜名護→那霸順路" },
+    note:"11-2月 8:00-19:00｜¥100｜停留30-45分｜名護→那霸順路",
+    desc:"突出東海的隆起珊瑚礁斷崖，形狀像大象鼻子，是沖繩最經典的海岸絕景。步道走一圈 20–30 分鐘，夕陽時段最美。從名護往那霸的路上順路。",
+    site:"https://www.manzamo.jp/manzamou.php" },
   { type:"spot", name:"琉球村", lat:26.429626, lng:127.775314,
-    note:"9:30-17:00｜大人¥2000｜停留1.5-2h" },
+    note:"9:30-17:00｜大人¥2000｜停留1.5-2h",
+    desc:"把沖繩各地的古民家移築重組成的主題村，可以看太鼓舞、獅子舞表演，也有織布陶藝等體驗（部分需預約）。適合親子與想一次看懂沖繩傳統文化的人。",
+    site:"https://www.ryukyumura.co.jp/" },
   { type:"spot", name:"殘波岬燈塔", lat:26.438705, lng:127.715752,
-    note:"9:30-12:00/13:00-16:30｜登塔¥300｜⚠️中午不開放" },
+    note:"9:30-12:00/13:00-16:30｜登塔¥300｜⚠️中午不開放",
+    desc:"可以登頂的白色燈塔，高約 31 公尺，底下是綿延 2 公里的斷崖。晴天看得到粟國島與久米島。2026 年 3 月起中午 12:00–13:00 不開放登塔，別踩到這個雷。",
+    site:"https://www.tokokai.org/tourlight/tourlight14/" },
   { type:"spot", name:"座喜味城跡", lat:26.406575, lng:127.742131,
-    note:"城跡24h免費｜博物館9:00-18:00 ¥500 週三休｜世界遺產" },
+    note:"城跡24h免費｜博物館9:00-18:00 ¥500 週三休｜世界遺產",
+    desc:"名將護佐丸的築城代表作，世界遺產中規模較小但石砌工藝精湛，弧形城牆保存完整，視野開闊。城跡本身免費且 24 小時開放，但停車場 18:00 上鎖。",
+    site:"https://www.vill.yomitan.okinawa.jp/" },
   { type:"spot", name:"美國村", lat:26.316521, lng:127.757364,
-    note:"園區全天｜免費(摩天輪大人¥600)｜停留2-3h" },
+    note:"園區全天｜免費(摩天輪大人¥600)｜停留2-3h",
+    desc:"仿美式風格的大型商圈，餐廳、雜貨、古著、電影院都有，還有本島唯一的大型摩天輪 SKYMAX60。傍晚接旁邊的日落海灘看夕陽是經典組合。",
+    site:"https://www.okinawa-americanvillage.com/" },
   { type:"spot", name:"北谷Sunset Beach", lat:26.31691, lng:127.759308,
-    note:"11月9:00-17:00｜免費｜夕陽有名" },
+    note:"11月9:00-17:00｜免費｜夕陽有名",
+    desc:"北谷町的公營海灘，緊鄰美國村走路就到，以夕陽聞名。11 月是遊泳季尾聲，多數人只是散步拍照。",
+    site:"https://www.chatan.jp/smph/seikatsuguide/koen_doro/beach/sunset.html" },
   { type:"spot", name:"海中道路・海の駅あやはし館", lat:26.331745, lng:127.929245,
-    note:"9:00-17:30 無休｜免費｜4.75km跨海公路" },
+    note:"9:00-17:30 無休｜免費｜4.75km跨海公路",
+    desc:"橫跨海面的 4.75 公里公路，兩側都是海，是中部兜風的經典路線。中間的海の駅可以休息、吃東西，2 樓有海洋文化資料館。可以順著開去伊計島。",
+    site:"https://uruma-ru.jp/member/uminoekiayahashikan/" },
   { type:"spot", name:"勝連城跡", lat:26.330818, lng:127.878598,
-    note:"9:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產" },
+    note:"9:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產",
+    desc:"世界遺產琉球城跡群之一，站在制高點可以 360 度看到勝連半島與外海。附設的あまわりパーク有展示與假日現場表演（11:00／13:00／15:00）。",
+    site:"https://www.katsuren-jo.jp/" },
   { type:"spot", name:"ビオスの丘", lat:26.421672, lng:127.796857,
-    note:"9:00-17:30 週二休｜大人¥2200(含遊湖船)｜停留2-3h" },
+    note:"9:00-17:30 週二休｜大人¥2200(含遊湖船)｜停留2-3h",
+    desc:"亞熱帶森林與人工湖組成的自然園區，門票含遊湖船一次，還有水牛車與小動物區，步調悠閒適合親子。官網有公告「設施改善計畫中」，去之前確認一下哪些設施暫停。",
+    site:"https://www.bios-hill.co.jp/" },
   { type:"spot", name:"首里城公園", lat:26.217434, lng:127.719103,
-    note:"8:00-19:00｜大人¥400｜停留1.5-2.5h｜正殿內部11/23才開放" },
+    note:"8:00-19:00｜大人¥400｜停留1.5-2.5h｜正殿內部11/23才開放",
+    desc:"琉球王國的政治中心，世界遺產。2019 年大火後重建中，正殿外觀已經重現（赤瓦、龍頭棟飾），但內部要 11/23 才開放 —— 我們去的時候看不到內部，不過門票也還是舊價 ¥400。可以上高台見學デッキ俯瞰正殿屋頂，以及看復興展示室。",
+    site:"https://oki-park.jp/shurijo/" },
   { type:"spot", name:"金城町石疊道", lat:26.215758, lng:127.714313,
-    note:"全天｜免費｜停留30分-1h｜雨天濕滑" },
+    note:"全天｜免費｜停留30分-1h｜雨天濕滑",
+    desc:"16 世紀初鋪設的琉球王朝官道，現存約 238 公尺石板路，兩旁是紅瓦民居、老井與 300 年的琉球松，很有時代感。跟首里城排同一天最順。雨天石板濕滑要小心。",
+    site:"https://www.okinawastory.jp/spot/1360" },
   { type:"spot", name:"國際通", lat:26.213812, lng:127.68086,
-    note:"店家多10:00-22:00｜県庁前站步行3-4分" },
+    note:"店家多10:00-22:00｜県庁前站步行3-4分",
+    desc:"那霸最主要的商店街，全長約 1.6 公里，土產、藥妝、餐廳、服飾都集中在這。我們住的 Almont 走 3–4 分鐘就到，是每天出入的基地。",
+    site:"https://www.naha-navi.or.jp/" },
   { type:"spot", name:"壺屋やちむん通り", lat:26.212986, lng:127.691977,
-    note:"街道全天｜免費｜停留1.5-2h｜陶器街" },
+    note:"街道全天｜免費｜停留1.5-2h｜陶器街",
+    desc:"約 400 公尺的琉球石灰岩石板路，20 多家陶藝工房與藝廊，是買沖繩陶器「やちむん」的首選。沿途有壺屋燒物博物館與登窯遺跡「南ヌ窯」。",
+    site:"https://tsuboya-yachimun.com/" },
   { type:"spot", name:"第一牧志公設市場", lat:26.214546, lng:127.688288,
-    note:"8:00-22:00｜每月第4個週日休｜牧志站步行9分" },
+    note:"8:00-22:00｜每月第4個週日休｜牧志站步行9分",
+    desc:"那霸的廚房。1 樓買海鮮與豬肉，可以直接拿到 2 樓食堂付加工費代客料理，是體驗沖繩飲食文化最直接的方式。每月第 4 個週日公休。",
+    site:"https://www.makishi-public-market.jp/" },
   { type:"spot", name:"波上宮", lat:26.22056, lng:127.671136,
-    note:"授與所9:00-16:45｜免費｜單軌不可達建議計程車" },
+    note:"授與所9:00-16:45｜免費｜單軌不可達建議計程車",
+    desc:"琉球八社之首，蓋在海岸斷崖上，下面就是波の上海灘，景色很特別。可以求御朱印（¥300）。單軌到不了，建議搭計程車。",
+    site:"http://naminouegu.jp/" },
   { type:"spot", name:"識名園", lat:26.204071, lng:127.715733,
-    note:"10-3月9:00-17:30 週三休｜大人¥400｜世界遺產" },
+    note:"10-3月9:00-17:30 週三休｜大人¥400｜世界遺產",
+    desc:"琉球國王家族的別邸庭園，世界遺產。迴遊式庭園融合中國與日本造園手法，是招待中國冊封使的地方，安靜好拍。每週三公休要注意。",
+    site:"https://www.city.naha.okinawa.jp/kankou/bunkazai/shikinaen.html" },
   { type:"spot", name:"榮町市場", lat:26.217244, lng:127.697036,
-    note:"日間店家多週日休｜居酒屋至23:00｜安里站步行2分" },
+    note:"日間店家多週日休｜居酒屋至23:00｜安里站步行2分",
+    desc:"昭和感很重的老市場，白天是傳統市場，入夜整條變成居酒屋街，很有深夜食堂的氣氛。有屋頂拱廊，下雨也能逛。日間店家多數週日公休。",
+    site:"https://rurubu.jp/andmore/article/17967" },
   { type:"spot", name:"T Galleria by DFS", lat:26.223963, lng:127.696999,
-    note:"9:00-21:00(五六至22:00)｜免稅需憑機票" },
+    note:"9:00-21:00(五六至22:00)｜免稅需憑機票",
+    desc:"日本唯一「國內旅行也能免稅購物」的百貨式免稅店，130 多個國際品牌。單軌おもろまち站出站即達。注意免稅購買需要出示機票，且出發前 2 小時截止。",
+    site:"https://www.dfs.com/jp/okinawa" },
   { type:"spot", name:"齋場御嶽", lat:26.172358, lng:127.826373,
-    note:"11-2月9:00-17:30｜大人¥600(10/1起漲)｜停留1-1.5h｜世界遺產" },
+    note:"11-2月9:00-17:30｜大人¥600(10/1起漲)｜停留1-1.5h｜世界遺產",
+    desc:"琉球王國最高等級的聖地，世界遺產。最著名的是兩塊巨岩倚靠形成的三角形空間「三庫理」，從縫隙可以望見久高島。注意 2026/10/1 起門票漲成 ¥600，且售票處在物產館、走到入口還要 7–8 分鐘。",
+    site:"https://okinawa-nanjo.jp/sefa/" },
   { type:"spot", name:"知念岬公園", lat:26.170826, lng:127.824308,
-    note:"入園自由｜免費｜距齋場御嶽車程5分" },
+    note:"入園自由｜免費｜距齋場御嶽車程5分",
+    desc:"免費的南部絕景公園，太平洋與久高島一望無際，草坡走一圈很舒服。距齋場御嶽只要 5 分鐘車程，兩個一定排一起。",
+    site:"https://www.okinawastory.jp/spot/1414" },
   { type:"spot", name:"ニライカナイ橋", lat:26.167109, lng:127.819147,
-    note:"全天｜免費｜停留15-30分｜展望台無停車場" },
+    note:"全天｜免費｜停留15-30分｜展望台無停車場",
+    desc:"全長 660 公尺、高 80 公尺的雙橋大彎道，從展望台俯瞰太平洋的畫面是南部代表照。車子開不上展望台要走路，而且沒有停車場，需在附近路邊停。",
+    site:"https://www.odnsym.com/spot/nirai.html" },
   { type:"spot", name:"奧武島", lat:26.128952, lng:127.772863,
-    note:"有陸橋不用搭船｜天婦羅聖地｜停留1-1.5h" },
+    note:"有陸橋不用搭船｜天婦羅聖地｜停留1-1.5h",
+    desc:"有陸橋連通本島、不用搭船的小島，以沖繩天婦羅聞名，橋邊就好幾家。島上有貓、有小海灘，逛一圈很悠閒。",
+    site:"https://www.okinawaclip.com/post/1707351708/" },
   { type:"spot", name:"瀬長島 Umikaji Terrace", lat:26.175915, lng:127.64978,
-    note:"10:00-21:00 全年無休｜免費｜機場車程15分｜看飛機+夕陽" },
+    note:"10:00-21:00 全年無休｜免費｜機場車程15分｜看飛機+夕陽",
+    desc:"白色希臘風格的階梯狀商店街，正對海，而且就在那霸機場跑道旁邊，可以看飛機起降配夕陽。離機場車程 15 分鐘，最適合當回程前最後一站。",
+    site:"https://www.umikajiterrace.com/" },
   { type:"spot", name:"沖繩世界・玉泉洞", lat:26.140242, lng:127.748192,
-    note:"9:00-17:30｜大人¥2000｜停留2.5-3.5h｜鐘乳洞" },
+    note:"9:00-17:30｜大人¥2000｜停留2.5-3.5h｜鐘乳洞",
+    desc:"主打東洋最大級的鐘乳洞玉泉洞（全長 5 公里、開放約 890 公尺），另有琉球王國城下町、毒蛇博物公園與エイサー太鼓表演，內容多要抓 3 小時。",
+    site:"https://www.gyokusendo.co.jp/okinawaworld/" },
   { type:"spot", name:"平和祈念公園", lat:26.095601, lng:127.723727,
-    note:"公園全天｜資料館9:00-17:00 大人¥300｜停留2-3h" },
+    note:"公園全天｜資料館9:00-17:00 大人¥300｜停留2-3h",
+    desc:"沖繩戰終結之地。「平和之礎」刻著所有罹難者的姓名不分國籍，摩文仁之丘可以俯瞰太平洋。資料館的展示很沉重但值得，建議留足時間。",
+    site:"https://www.peace-museum.okinawa.jp/" },
   { type:"spot", name:"舊海軍司令部壕", lat:26.186191, lng:127.676714,
-    note:"9:00-17:00｜大人¥450｜停留1-1.5h｜戰時地下坑道" },
+    note:"9:00-17:00｜大人¥450｜停留1-1.5h｜戰時地下坑道",
+    desc:"保留原貌的戰時地下坑道，可以實際走進司令官室、幕僚室，牆上還有手榴彈自決的痕跡。距那霸市區只要 20 分鐘，是理解沖繩戰最直接的現場。",
+    site:"https://kaigungou.ocvb.or.jp/" },
   { type:"spot", name:"ガンガラーの谷", lat:26.141629, lng:127.746885,
-    note:"⚠️完全預約制｜場次10/12/14/16時｜大人¥2500" },
+    note:"⚠️完全預約制｜場次10/12/14/16時｜大人¥2500",
+    desc:"鐘乳洞塌陷後形成的亞熱帶森林谷地，有巨大的榕樹與史前人類遺跡。完全預約制，只能跟導覽團走（10:00／12:00／14:00／16:00），不能自由進入，一定要先訂。",
+    site:"https://www.okinawastory.jp/spot/1055" },
   { type:"spot", name:"泊港(離島船)", lat:26.225233, lng:127.684937,
-    note:"往渡嘉敷・座間味的出發港" },
+    note:"往渡嘉敷・座間味的出發港",
+    desc:"前往渡嘉敷島、座間味島的出發港，那霸市區內。船票可線上或現場買，11 月東北季風增強時容易停航，出發前一晚務必查船公司公告。" },
   { type:"spot", name:"安座真港(往久高島)", lat:26.177313, lng:127.82209,
-    note:"往久高島｜那霸車程40分" },
+    note:"往久高島｜那霸車程40分",
+    desc:"前往「神之島」久高島的港口，位於南城市、離那霸約 40 分鐘車程。渡輪與高速船每日各約 3 班，可以當天來回。" },
 
   /* ---- 美食 ---- */
   { type:"food", name:"ゆうなんぎい", lat:26.214465, lng:127.68186,
-    note:"12:00-15:00/17:30-22:30 週日休｜¥2000-4000｜ラフテー｜不接受預約要排隊｜県庁前站5分" },
+    note:"12:00-15:00/17:30-22:30 週日休｜¥2000-4000｜ラフテー｜不接受預約要排隊｜県庁前站5分",
+    desc:"那霸最有名的沖繩家庭料理老店之一，招牌是用自家味噌調味的ラフテー（滷豬五花）。不接受預約，用餐時段一定要排隊。就在久茂地、離我們飯店走路 5 分鐘。",
+    site:"https://tabelog.com/okinawa/A4701/A470101/47000186/" },
   { type:"food", name:"ステーキハウス88 國際通り店", lat:26.216269, lng:127.688515,
-    note:"11:00-23:00 無休｜午¥2000起/晚¥5000-10000｜石垣牛｜可網路預約" },
+    note:"11:00-23:00 無休｜午¥2000起/晚¥5000-10000｜石垣牛｜可網路預約",
+    desc:"沖繩代表性的牛排連鎖老字號，從石垣牛到美國牛都有，觀光客與在地人都吃。營業到 23:00，逛完國際通吃消夜牛排是沖繩的一種儀式感。",
+    site:"https://s88.co.jp/shop/steak88/kokusaidori/" },
   { type:"food", name:"榮町市場居酒屋群", lat:26.215788, lng:127.696152,
-    note:"18:00-23:00｜¥2000-3500｜炭火烤雞串｜安里站2分" },
+    note:"18:00-23:00｜¥2000-3500｜炭火烤雞串｜安里站2分",
+    desc:"入夜後整個市場變成居酒屋街，炭火烤雞串、內臟料理、泡盛，價位親民、氣氛很在地。人氣店常滿，建議傍晚早點到。",
+    site:"https://www.smartmagazine.jp/okinawa/article/meal/22143/" },
   { type:"food", name:"ブルーシール 國際通り店", lat:26.215376, lng:127.685059,
-    note:"10:00-22:30(五六至23:00)｜¥400起｜紅芋・鹽味餅乾" },
+    note:"10:00-22:30(五六至23:00)｜¥400起｜紅芋・鹽味餅乾",
+    desc:"源自美軍基地文化的沖繩在地冰淇淋，招牌是紅芋與鹽味餅乾口味。逛國際通走累了的標準補給站。",
+    site:"https://www.blueseal.co.jp/" },
   { type:"food", name:"美ら花 別邸", lat:26.532351, lng:127.95919,
-    note:"11:00-15:00/17:00-22:00 週三休｜¥2000-4000｜⭐距名護飯店步行1分" },
+    note:"11:00-15:00/17:00-22:00 週三休｜¥2000-4000｜⭐距名護飯店步行1分",
+    desc:"距離名護飯店走路 1 分鐘的沖繩郷土料理店，沖繩そば與家常菜都有，160 席空間寬敞。因為飯店不供應晚餐，11/7 剛到那天吃這裡最省事。建議先訂位。",
+    site:"https://www.hotpepper.jp/strJ000597095/" },
   { type:"food", name:"Gyu Ton Pan", lat:26.539755, lng:127.949226,
-    note:"12:00-21:00 週三休｜¥4000-7000｜100%純血阿古豬涮涮鍋｜建議預約" },
+    note:"12:00-21:00 週三休｜¥4000-7000｜100%純血阿古豬涮涮鍋｜建議預約",
+    desc:"主打 100% 純血阿古豬涮涮鍋與沖繩和牛燒烤，離名護飯店走路 9 分鐘。阿古豬油脂帶甜、入口即化，是沖繩必吃。建議前一天先電話訂位。",
+    site:"https://www.hotpepper.jp/strJ000741719/" },
   { type:"food", name:"きしもと食堂 本部本店", lat:26.660124, lng:127.895851,
-    note:"11:00-17:30 賣完即打烊 週三休｜¥700-900｜手打沖繩そば｜大排長龍" },
+    note:"11:00-17:30 賣完即打烊 週三休｜¥700-900｜手打沖繩そば｜大排長龍",
+    desc:"明治 38 年（1905）創業，現存最老的沖繩そば店之一，手打麵配柴魚湯頭。賣完就打烊、週三公休，建議中午前到。可以跟美麗海水族館排同一天。",
+    site:"https://www.tabirai.net/sightseeing/column/0003897.aspx" },
   { type:"food", name:"道の駅 許田", lat:26.552133, lng:127.969515,
-    note:"餐飲約11:00-14:00｜¥100-500｜天婦羅｜也賣水族館折扣票(現金)" },
+    note:"餐飲約11:00-14:00｜¥100-500｜天婦羅｜也賣水族館折扣票(現金)",
+    desc:"北部最熱門的休息站，天婦羅、沖繩甜甜圈サーターアンダギー等小吃便宜好吃。重點是這裡有賣美麗海水族館的折扣票（大人 ¥1850，只收現金），去水族館前先繞過來。",
+    site:"https://www.okinawastory.jp/spot/1019" },
   { type:"food", name:"中本鮮魚てんぷら店", lat:26.1367, lng:127.755966,
-    note:"10:30-18:00 週四休｜¥80-150/個｜沖繩天婦羅名店｜天天排隊" },
+    note:"10:30-18:00 週四休｜¥80-150/個｜沖繩天婦羅名店｜天天排隊",
+    desc:"奧武島上的天婦羅名店，天天排隊。沖繩天婦羅麵衣厚實偏鹹香，可以直接吃不用沾醬，一個 ¥80–150 的銅板價。週四公休。",
+    site:"https://okinawa-aruki.com/nakamototenpura/" },
   { type:"food", name:"A&W 那覇空港店", lat:26.1958, lng:127.6458,
-    note:"約7:00-20:00｜¥800-1500｜Root Beer吃到飽｜國內線3F" },
+    note:"約7:00-20:00｜¥800-1500｜Root Beer吃到飽｜國內線3F",
+    desc:"沖繩人叫它「エンダー」的美式速食，招牌是可以續杯的麥根沙士 Root Beer 與 Curly Fries。就在國內線航廈 3 樓，回程候機剛好。",
+    site:"https://www.awok.co.jp/shopsearch/nahaairport/" },
   { type:"food", name:"瑞泉酒造", lat:26.215097, lng:127.720818,
-    note:"9:00-17:00｜泡盛百年酒廠｜可免費見學+試飲｜週日不開放見學" },
+    note:"9:00-17:00｜泡盛百年酒廠｜可免費見學+試飲｜週日不開放見學",
+    desc:"明治 20 年創業的百年泡盛酒廠，可以免費見學參觀製程並試飲，古酒「青龍 3 年」是經典款。注意週日不開放見學。",
+    site:"https://www.zuisen.co.jp/" },
 
   /* ---- 購物 ---- */
   { type:"shop", name:"御菓子御殿 国際通り松尾店", lat:26.213926, lng:127.681442,
-    note:"09:00-22:00 年中無休｜紅芋塔6入¥800起｜県庁前站步行3分" },
+    note:"09:00-22:00 年中無休｜紅芋塔6入¥800起｜県庁前站步行3分",
+    desc:"沖繩伴手禮銷售冠軍「元祖紅芋塔」的本家，內餡是 100% 沖繩產紫芋，拿過 Monde Selection 金賞。離我們飯店走路 3 分鐘，營業到 22:00。",
+    site:"https://okashigoten.co.jp/" },
   { type:"shop", name:"塩屋(まーすやー)国際通り店", lat:26.21669, lng:127.689697,
-    note:"10:00-22:00 無休｜¥300-1500｜日本最大鹽專門店130種鹽" },
+    note:"10:00-22:00 無休｜¥300-1500｜日本最大鹽專門店130種鹽",
+    desc:"日本最大的鹽專門店，130 種鹽可以試吃比較，包含拿過金氏世界紀錄的宮古島雪鹽。小包裝很適合當伴手禮。",
+    site:"https://www.ma-suya.net/store/okinawa_kokusai/" },
   { type:"shop", name:"育陶園 本店", lat:26.212847, lng:127.692055,
-    note:"12:00-18:00 週三休｜茶碗¥1000起/風獅爺¥2000起｜壺屋燒窯元" },
+    note:"12:00-18:00 週三休｜茶碗¥1000起/風獅爺¥2000起｜壺屋燒窯元",
+    desc:"壺屋燒的代表性窯元，300 多年歷史。除了買陶器餐具與風獅爺，也可以預約捏製風獅爺的陶藝體驗。週三公休。",
+    site:"https://www.ikutouen.com/" },
   { type:"shop", name:"育陶園 壺屋のいりぐち", lat:26.213745, lng:127.690483,
-    note:"10:00-17:45 週四休｜2025/10新開幕" },
+    note:"10:00-17:45 週四休｜2025/10新開幕",
+    desc:"育陶園 2025 年 10 月新開的店，位置就在壺屋通入口，比本店早開（10:00）。週四公休。",
+    site:"https://www.ikutouen.com/" },
   { type:"shop", name:"くば笠屋 平和通り本店", lat:26.215666, lng:127.688675,
-    note:"10:00-19:00｜玻璃杯¥1500起｜可現場吹製體驗" },
+    note:"10:00-19:00｜玻璃杯¥1500起｜可現場吹製體驗",
+    desc:"國際通內少數可以現場看琉球玻璃吹製、甚至自己體驗的店。琉球玻璃源自戰後用可樂瓶再製，顏色厚實有氣泡感。",
+    site:"https://www.kubagasaya-net.com/" },
   { type:"shop", name:"恩納ガラス工房", lat:26.454067, lng:127.819565,
-    note:"8:00-18:00｜¥1000-3000｜⭐名護→那霸移動日順路" },
+    note:"8:00-18:00｜¥1000-3000｜⭐名護→那霸移動日順路",
+    desc:"恩納村的琉球玻璃工房，可以參觀吹製過程與體驗。位置正好在國道 58 號、名護往那霸的路上，11/9 換飯店那天順路。",
+    site:"https://oki-raku.net/blog/onnagarasukoubou/" },
   { type:"shop", name:"MAJUN OKINAWA 那覇本店", lat:26.213757, lng:127.690254,
-    note:"10:00-19:00｜¥8700起｜かりゆしウェア代表品牌" },
+    note:"10:00-19:00｜¥8700起｜かりゆしウェア代表品牌",
+    desc:"沖繩襯衫「かりゆしウェア」的代表品牌，每年推出原創花紋，是正式場合也能穿的沖繩服。本店在壺屋，價位 ¥8700 起。",
+    site:"https://www.majun-okinawa.jp/shopinfo/" },
   { type:"shop", name:"Mango House 国際通1号店", lat:26.21735, lng:127.691139,
-    note:"10:00-22:00｜¥5000-7000起｜沖繩襯衫" },
+    note:"10:00-22:00｜¥5000-7000起｜沖繩襯衫",
+    desc:"國際通上的かりゆしウェア店，款式多、價位比 MAJUN 親民，營業到 22:00，逛街順路就能買。",
+    site:"https://tw.trip.com/moments/detail/naha-57429-145479161/" },
   { type:"shop", name:"Cooper! 古著", lat:26.214252, lng:127.685722,
-    note:"12:00-21:00 週一休｜浮島通り｜美式+日系古著" },
+    note:"12:00-21:00 週一休｜浮島通り｜美式+日系古著",
+    desc:"浮島通り上的古著店，美式與日系並陳，主打「乾淨古著」狀態很好。週一公休。浮島通一帶還有好幾家古著店可以連著逛。",
+    site:"http://www.cooper-okinawa.com/" },
   { type:"shop", name:"La Cucina ソープ・ブティック", lat:26.214312, lng:127.685715,
-    note:"12:00-18:00 週六日休｜手工皂¥500起｜月桃・海泥" },
+    note:"12:00-18:00 週六日休｜手工皂¥500起｜月桃・海泥",
+    desc:"沖繩少見的專業手工皂精品店，用月桃、青木瓜、海泥（クチャ）等在地素材，店面質感像選物店。注意週六日公休，平日才開。",
+    site:"https://www.okinawaclip.com/post/1705100752/" },
   { type:"shop", name:"唐吉訶德 国際通り店", lat:26.216045, lng:127.687714,
-    note:"24小時營業｜B1-4F共5層｜美妝零食電器" },
+    note:"24小時營業｜B1-4F共5層｜美妝零食電器",
+    desc:"24 小時營業，B1 到 4F 共 5 層，美妝、零食、電器、伴手禮一次買齊。常有滿額退稅優惠，適合集中在這裡湊滿 ¥5000 門檻。",
+    site:"https://www.donki.com/" },
   { type:"shop", name:"マツモトキヨシ あさと国際通り店", lat:26.21847, lng:127.694313,
-    note:"10:00-22:00｜自有品牌matsukiyo LAB CP值高" },
+    note:"10:00-22:00｜自有品牌matsukiyo LAB CP值高",
+    desc:"日本最大藥妝連鎖之一，自有品牌 matsukiyo LAB 的洗面乳與美容液 CP 值高。營業到 22:00。",
+    site:"https://www.matsukiyo.co.jp/" },
   { type:"shop", name:"大国薬品 国際通りむつみ橋店", lat:26.215954, lng:127.688057,
-    note:"主打「日本全國最便宜」標示" },
+    note:"主打「日本全國最便宜」標示",
+    desc:"國際通上有 3–5 間分店，招牌打「日本全國最便宜」。建議跟唐吉訶德、マツキヨ 快速比個價再決定在哪結帳。",
+    site:"https://daikokudrug.com/store/628/" },
   { type:"shop", name:"MAJUN OUTLET 糸滿店", lat:26.14032, lng:127.66095,
-    note:"10:00-19:00｜比本店便宜｜需自駕" },
+    note:"10:00-19:00｜比本店便宜｜需自駕",
+    desc:"MAJUN 的 Outlet 店，同樣的沖繩襯衫比本店便宜，適合一次買多件送禮。位置在糸滿，需要開車。",
+    site:"https://www.majun-okinawa.jp/shopinfo/" },
   { type:"shop", name:"ASHIBINAA Outlet", lat:26.158874, lng:127.657082,
-    note:"10:00-20:00｜機場車程15分｜回程順路" },
+    note:"10:00-20:00｜機場車程15分｜回程順路",
+    desc:"沖繩最大的 Outlet，距那霸機場車程 15 分鐘，回程當天順路。國際精品與運動品牌為主。",
+    site:"https://www.ashibinaa.com/" },
 
-  /* 新增地點：照上面格式加一筆，地圖與候選清單會自動更新 */
+  /* 新增地點：照上面格式加一筆即可 */
 ];
 
 /* =========================================================
@@ -890,7 +1073,7 @@ PLACES.forEach(p => {
   const q = encodeURIComponent(p.name + " 沖縄");
   const m = L.marker([p.lat, p.lng], { icon })
     .bindPopup(`<b>${p.name}</b>${p.note ? p.note.replace(/｜/g, "<br>") + "<br>" : ""}
-      <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>`);
+      <a href="#" class="popup-more" data-name="${p.name.replace(/"/g, "&quot;")}">📖 詳細說明與介紹 →</a>`);
   (layers[p.type] = layers[p.type] || L.layerGroup().addTo(map)).addLayer(m);
   counts[p.type] = (counts[p.type] || 0) + 1;
   bounds.push([p.lat, p.lng]);
@@ -925,6 +1108,17 @@ all.addEventListener("click", () => {
   all.textContent = spotOnly ? "全部顯示" : "只看景點";
 });
 legend.appendChild(all);
+
+/* 地圖彈窗內的「詳細說明」開啟 modal */
+map.on("popupopen", e => {
+  const a = e.popup.getElement().querySelector(".popup-more");
+  if (!a) return;
+  a.addEventListener("click", ev => {
+    ev.preventDefault();
+    const p = PLACES.find(x => x.name === a.dataset.name);
+    if (p) { map.closePopup(); openPlace(p); }
+  });
+});
 
 if (bounds.length > 1) map.fitBounds(bounds, { padding: isTouch ? [30,30] : [55,55] });
 
@@ -976,6 +1170,62 @@ function showDay(i){
   showDay(idx);
 })();
 
+/* ---------- 詳細彈窗 ---------- */
+const modalBg = document.getElementById("modalBg");
+const FACT_ICON = { "8":"🕘","9":"🕘","1":"🕘","¥":"💴","大":"💴","免":"💴","停":"⏱","全":"🕘","⚠":"⚠️" };
+
+function openPlace(p){
+  const s = STYLE[p.type] || STYLE.spot;
+  document.getElementById("mHead").style.background =
+    `linear-gradient(120deg, ${s.c}, ${s.c}cc 70%, ${s.c}99)`;
+  document.getElementById("mKind").textContent = s.e + " " + s.label;
+  document.getElementById("mTitle").textContent = p.name;
+  document.getElementById("mDesc").textContent = p.desc || "";
+
+  /* note 用｜分隔，逐條列出 */
+  document.getElementById("mFacts").innerHTML = (p.note || "").split("｜")
+    .filter(Boolean)
+    .map(x => {
+      const ic = x.startsWith("⚠️") ? "⚠️"
+        : /^\d|^全天|^入園|^授與|^店家|^餐飲|^沙灘|^城跡|^公園|^約/.test(x) ? "🕘"
+        : /¥|免費|大人|登塔/.test(x) ? "💴"
+        : /停留|往返/.test(x) ? "⏱"
+        : /步行|車程|站|港|距/.test(x) ? "🚶"
+        : "•";
+      return `<div class="fact"><b>${ic}</b><span>${x.replace(/^⚠️/, "")}</span></div>`;
+    }).join("");
+
+  /* 連結：官網 + Google 地圖 + 別人的介紹 */
+  const qName = encodeURIComponent(p.name);
+  const qJP   = encodeURIComponent(p.name + " 沖縄");
+  const L = [];
+  if (p.site) L.push({ e:"🌐", t:"官方網站", u:p.site, primary:true });
+  L.push({ e:"📍", t:"Google 地圖", u:`https://www.google.com/maps/search/?api=1&query=${qJP}`, primary:!p.site });
+  L.push({ e:"🔍", t:"中文遊記心得", u:`https://www.google.com/search?q=${qName}+沖繩+心得` });
+  L.push({ e:"📝", t:"部落格介紹",   u:`https://www.google.com/search?q=${qName}+沖繩+推薦+部落格` });
+  L.push({ e:"▶️", t:"YouTube 影片", u:`https://www.youtube.com/results?search_query=${qJP}` });
+  if (p.type === "food")
+    L.push({ e:"🍽", t:"食べログ評價", u:`https://tabelog.com/rstLst/?sk=${qName}&sa=沖縄県` });
+  if (p.type === "spot")
+    L.push({ e:"🗺", t:"TripAdvisor", u:`https://www.tripadvisor.com.tw/Search?q=${qName}` });
+  if (p.type === "shop")
+    L.push({ e:"🛍", t:"商品・價格查詢", u:`https://www.google.com/search?q=${qName}+沖繩+必買` });
+
+  document.getElementById("mLinks").innerHTML = L.map(l =>
+    `<a href="${l.u}" target="_blank" rel="noopener"${l.primary ? ' class="primary"' : ""}><em>${l.e}</em>${l.t}</a>`
+  ).join("");
+
+  modalBg.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closePlace(){
+  modalBg.classList.remove("open");
+  document.body.style.overflow = "";
+}
+document.getElementById("mClose").addEventListener("click", closePlace);
+modalBg.addEventListener("click", e => { if (e.target === modalBg) closePlace(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closePlace(); });
+
 /* ---------- 景點／美食候選清單 ---------- */
 function renderPool(type, el){
   const list = PLACES.filter(p => p.type === type);
@@ -985,16 +1235,20 @@ function renderPool(type, el){
       <b>還在蒐集中</b>想到就丟進來，會同時出現在地圖和這裡。</div>`;
     return;
   }
-  el.innerHTML = list.map(p => {
+  el.innerHTML = list.map((p, i) => {
     const on = planned.has(p.name);
-    return `<div class="pitem">
+    return `<div class="pitem" data-type="${type}" data-i="${i}" tabindex="0" role="button">
       <span class="used ${on ? "" : "no"}">${on ? "已排入行程" : "備選"}</span>
       <h4>${STYLE[p.type].e} ${p.name}</h4>
-      ${p.note ? `<p class="pnote">${p.note.replace(/<br>/g, " · ")}</p>` : ""}
-      <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.name + " 沖縄")}"
-         target="_blank" rel="noopener">在地圖開啟 →</a>
+      ${p.note ? `<p class="pnote">${p.note.replace(/｜/g, " · ")}</p>` : ""}
+      <span class="more">看詳細說明與介紹 →</span>
     </div>`;
   }).join("");
+  el.querySelectorAll(".pitem").forEach(card => {
+    const open = () => openPlace(list[+card.dataset.i]);
+    card.addEventListener("click", open);
+    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+  });
 }
 renderPool("spot", document.getElementById("poolSpot"));
 renderPool("food", document.getElementById("poolFood"));
