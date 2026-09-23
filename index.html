@@ -167,7 +167,13 @@ h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
 .map-hint{display:none}
 #map{height:520px;border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:1;border:4px solid #fff}
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.lg{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);padding:6px 14px;border-radius:999px;font-size:.82rem;font-weight:600;box-shadow:var(--shadow)}
+.lg{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--line);padding:7px 15px;border-radius:999px;
+  font-size:.82rem;font-weight:600;box-shadow:var(--shadow);font-family:inherit;color:var(--ink);cursor:pointer;transition:.18s;opacity:.42}
+.lg.on{opacity:1;border-color:var(--aqua)}
+.lg:hover{transform:translateY(-1px)}
+.lg em{font-style:normal;font-size:.72rem;font-weight:700;background:var(--sand-d);color:var(--ocean-d);padding:1px 7px;border-radius:999px;margin-left:2px}
+.lg.on em{background:rgba(20,184,189,.18)}
+.lg.alltoggle{opacity:1;border-style:dashed;color:var(--ink-soft)}
 .dot{width:11px;height:11px;border-radius:50%;flex:none}
 .pin-ico{display:grid;place-items:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.3);font-size:14px}
 .pin-ico span{transform:rotate(45deg)}
@@ -349,6 +355,7 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
       <a href="#map-sec">地圖</a>
       <a href="#spots">景點</a>
       <a href="#food">美食</a>
+      <a href="#shop">購物</a>
       <a href="#pack">行李</a>
       <a href="#links">實用連結</a>
     </div>
@@ -488,13 +495,8 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
     <p>點圖釘看詳細資訊 · 可縮放拖曳</p>
   </div>
   <div class="map-wrap"><div id="map"></div><div class="map-hint" id="mapHint">用兩指移動地圖</div></div>
-  <div class="legend">
-    <span class="lg"><i class="dot" style="background:#ff7a5c"></i>機場</span>
-    <span class="lg"><i class="dot" style="background:#0b6e7f"></i>飯店</span>
-    <span class="lg"><i class="dot" style="background:#14b8bd"></i>景點</span>
-    <span class="lg"><i class="dot" style="background:#ffc043"></i>美食</span>
-    <span class="lg" style="background:var(--sand-d);border:none">✏️ 景點與餐廳陸續補上</span>
-  </div>
+  <div class="legend" id="legend"></div>
+  <p class="pool-hint" style="margin-top:10px">點上面的標籤可以開關圖層。圖釘為概略位置，導航請點彈窗裡的 Google 地圖連結。</p>
 </section>
 
 <!-- ============ 景點 ============ -->
@@ -517,6 +519,29 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
   </div>
   <p class="pool-hint">同樣是全部候選，沒排進行程的當備案。需要訂位的記得註記。</p>
   <div class="pool" id="poolFood"></div>
+</section>
+
+<!-- ============ 購物 ============ -->
+<section id="shop">
+  <div class="sec-head">
+    <div class="ic">🛍</div>
+    <div><h2>購物清單</h2></div>
+    <p>伴手禮・雜貨・服飾・藥妝</p>
+  </div>
+  <p class="pool-hint">依 <b>吃的伴手禮 / 玩的雜貨 / 衣物服飾 / 美妝藥妝</b> 收集，全部標在地圖上。</p>
+  <div class="pool" id="poolShop"></div>
+
+  <div class="card" style="margin-top:20px;border-left:5px solid var(--coral)">
+    <h3 style="margin:0 0 8px;font-size:1.05rem">⚠️ 免稅新制 2026/11/01 上路 — 正好在我們出發前</h3>
+    <ul style="margin:0;padding-left:1.2em;font-size:.9rem;line-height:1.85">
+      <li>店內<b>一律先付含稅價</b>，不再是當場用免稅價結帳</li>
+      <li>退稅改到<b>出境時</b>在機場稅關確認後才退款</li>
+      <li>消耗品／一般品區分廢止，但<b>出境前仍禁止開封使用</b></li>
+      <li>門檻：同店同日未稅滿 <b>¥5,000</b></li>
+      <li>⚠️ 必須在<b>託運行李之前</b>完成稅關確認 → 免稅品放隨身行李</li>
+      <li>⚠️ 同一張收據的商品要<b>全部一起出示</b>，缺件可能整張失效</li>
+    </ul>
+  </div>
 </section>
 
 <!-- ============ 行李 ============ -->
@@ -617,19 +642,151 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
    type: airport（機場）/ hotel（飯店）/ spot（景點）/ food（美食）
    ========================================================= */
 const PLACES = [
-  { type:"airport", name:"那霸機場 OKA", lat:26.1958, lng:127.6458,
-    note:"去程 11/07 12:25 抵達 ／ 回程 11/14 16:50 起飛" },
+  /* ---- 機場 ---- */
+  { type:"airport", name:"那霸機場 OKA", lat:26.19615, lng:127.6458,
+    note:"去程11/07 12:25抵達｜回程11/14 16:50起飛" },
 
-  { type:"hotel", name:"Best Western 名戶海灘酒店", lat:26.5646, lng:127.9891,
-    note:"11/07–11/09（2 晚）<br>沖縄県名護市幸喜117" },
+  /* ---- 飯店 ---- */
+  { type:"hotel", name:"Best Western 名戶海灘酒店", lat:26.540105, lng:127.949226,
+    note:"11/07-11/09(2晚)｜⚠️不供應晚餐" },
+  { type:"hotel", name:"Almont Hotel 那霸県庁前", lat:26.213243, lng:127.678139,
+    note:"11/09-11/14(5晚)｜県庁前站步行3分｜098-866-3811" },
 
-  { type:"hotel", name:"Almont Hotel 那霸県庁前", lat:26.2148, lng:127.6796,
-    note:"11/09–11/14（5 晚）<br>那覇市久茂地1-3-5 ／ 県庁前站步行 3 分" },
+  /* ---- 景點 ---- */
+  { type:"spot", name:"沖繩美麗海水族館", lat:26.694369, lng:127.878038,
+    note:"8:30-18:30(入館至17:30)｜大人¥2180｜停留2.5-3.5h｜⚠️每週三為部分開園日" },
+  { type:"spot", name:"古宇利島・古宇利大橋", lat:26.701021, lng:128.020002,
+    note:"全天｜免費(停車¥100起)｜停留1.5-3h｜心形岩看退潮時間" },
+  { type:"spot", name:"今歸仁城跡", lat:26.692208, lng:127.927919,
+    note:"8:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產" },
+  { type:"spot", name:"備瀨福木林道", lat:26.703044, lng:127.884389,
+    note:"全天(住宅區請安靜)｜免費｜停留30分-1h｜距水族館車程3分" },
+  { type:"spot", name:"瀬底海灘", lat:26.646855, lng:127.817452,
+    note:"沙灘全天｜免費(停車¥1000/日)｜11月已無救生員" },
+  { type:"spot", name:"名護鳳梨園", lat:26.616574, lng:127.970852,
+    note:"10:00-18:00｜大人¥1500｜停留1-1.5h｜雨天備案" },
+  { type:"spot", name:"21世紀之森海灘", lat:26.599579, lng:127.972481,
+    note:"9:00-21:00｜免費｜傍晚看夕陽" },
+  { type:"spot", name:"ASMUI(原大石林山)", lat:26.845449, lng:128.259018,
+    note:"9:30-17:30｜大人¥2500｜停留1.5-2.5h｜2024/12改名" },
+  { type:"spot", name:"比地大瀑布", lat:26.71357, lng:128.197449,
+    note:"11月起冬季9:00-15:00｜大人¥500｜往返1.5-2h｜需涉溪穿防滑鞋" },
+  { type:"spot", name:"萬座毛", lat:26.505009, lng:127.850256,
+    note:"11-2月 8:00-19:00｜¥100｜停留30-45分｜名護→那霸順路" },
+  { type:"spot", name:"琉球村", lat:26.429626, lng:127.775314,
+    note:"9:30-17:00｜大人¥2000｜停留1.5-2h" },
+  { type:"spot", name:"殘波岬燈塔", lat:26.438705, lng:127.715752,
+    note:"9:30-12:00/13:00-16:30｜登塔¥300｜⚠️中午不開放" },
+  { type:"spot", name:"座喜味城跡", lat:26.406575, lng:127.742131,
+    note:"城跡24h免費｜博物館9:00-18:00 ¥500 週三休｜世界遺產" },
+  { type:"spot", name:"美國村", lat:26.316521, lng:127.757364,
+    note:"園區全天｜免費(摩天輪大人¥600)｜停留2-3h" },
+  { type:"spot", name:"北谷Sunset Beach", lat:26.31691, lng:127.759308,
+    note:"11月9:00-17:00｜免費｜夕陽有名" },
+  { type:"spot", name:"海中道路・海の駅あやはし館", lat:26.331745, lng:127.929245,
+    note:"9:00-17:30 無休｜免費｜4.75km跨海公路" },
+  { type:"spot", name:"勝連城跡", lat:26.330818, lng:127.878598,
+    note:"9:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產" },
+  { type:"spot", name:"ビオスの丘", lat:26.421672, lng:127.796857,
+    note:"9:00-17:30 週二休｜大人¥2200(含遊湖船)｜停留2-3h" },
+  { type:"spot", name:"首里城公園", lat:26.217434, lng:127.719103,
+    note:"8:00-19:00｜大人¥400｜停留1.5-2.5h｜正殿內部11/23才開放" },
+  { type:"spot", name:"金城町石疊道", lat:26.215758, lng:127.714313,
+    note:"全天｜免費｜停留30分-1h｜雨天濕滑" },
+  { type:"spot", name:"國際通", lat:26.213812, lng:127.68086,
+    note:"店家多10:00-22:00｜県庁前站步行3-4分" },
+  { type:"spot", name:"壺屋やちむん通り", lat:26.212986, lng:127.691977,
+    note:"街道全天｜免費｜停留1.5-2h｜陶器街" },
+  { type:"spot", name:"第一牧志公設市場", lat:26.214546, lng:127.688288,
+    note:"8:00-22:00｜每月第4個週日休｜牧志站步行9分" },
+  { type:"spot", name:"波上宮", lat:26.22056, lng:127.671136,
+    note:"授與所9:00-16:45｜免費｜單軌不可達建議計程車" },
+  { type:"spot", name:"識名園", lat:26.204071, lng:127.715733,
+    note:"10-3月9:00-17:30 週三休｜大人¥400｜世界遺產" },
+  { type:"spot", name:"榮町市場", lat:26.217244, lng:127.697036,
+    note:"日間店家多週日休｜居酒屋至23:00｜安里站步行2分" },
+  { type:"spot", name:"T Galleria by DFS", lat:26.223963, lng:127.696999,
+    note:"9:00-21:00(五六至22:00)｜免稅需憑機票" },
+  { type:"spot", name:"齋場御嶽", lat:26.172358, lng:127.826373,
+    note:"11-2月9:00-17:30｜大人¥600(10/1起漲)｜停留1-1.5h｜世界遺產" },
+  { type:"spot", name:"知念岬公園", lat:26.170826, lng:127.824308,
+    note:"入園自由｜免費｜距齋場御嶽車程5分" },
+  { type:"spot", name:"ニライカナイ橋", lat:26.167109, lng:127.819147,
+    note:"全天｜免費｜停留15-30分｜展望台無停車場" },
+  { type:"spot", name:"奧武島", lat:26.128952, lng:127.772863,
+    note:"有陸橋不用搭船｜天婦羅聖地｜停留1-1.5h" },
+  { type:"spot", name:"瀬長島 Umikaji Terrace", lat:26.175915, lng:127.64978,
+    note:"10:00-21:00 全年無休｜免費｜機場車程15分｜看飛機+夕陽" },
+  { type:"spot", name:"沖繩世界・玉泉洞", lat:26.140242, lng:127.748192,
+    note:"9:00-17:30｜大人¥2000｜停留2.5-3.5h｜鐘乳洞" },
+  { type:"spot", name:"平和祈念公園", lat:26.095601, lng:127.723727,
+    note:"公園全天｜資料館9:00-17:00 大人¥300｜停留2-3h" },
+  { type:"spot", name:"舊海軍司令部壕", lat:26.186191, lng:127.676714,
+    note:"9:00-17:00｜大人¥450｜停留1-1.5h｜戰時地下坑道" },
+  { type:"spot", name:"ガンガラーの谷", lat:26.141629, lng:127.746885,
+    note:"⚠️完全預約制｜場次10/12/14/16時｜大人¥2500" },
+  { type:"spot", name:"泊港(離島船)", lat:26.225233, lng:127.684937,
+    note:"往渡嘉敷・座間味的出發港" },
+  { type:"spot", name:"安座真港(往久高島)", lat:26.177313, lng:127.82209,
+    note:"往久高島｜那霸車程40分" },
 
-  /* ---- 之後補景點／餐廳，照下面格式加就好 ----
-  { type:"spot", name:"美麗海水族館", lat:26.6941, lng:127.8780, note:"建議停留 3 小時" },
-  { type:"food", name:"某某沖繩麵", lat:26.2150, lng:127.6870, note:"需訂位" },
-  ------------------------------------------------ */
+  /* ---- 美食 ---- */
+  { type:"food", name:"ゆうなんぎい", lat:26.214465, lng:127.68186,
+    note:"12:00-15:00/17:30-22:30 週日休｜¥2000-4000｜ラフテー｜不接受預約要排隊｜県庁前站5分" },
+  { type:"food", name:"ステーキハウス88 國際通り店", lat:26.216269, lng:127.688515,
+    note:"11:00-23:00 無休｜午¥2000起/晚¥5000-10000｜石垣牛｜可網路預約" },
+  { type:"food", name:"榮町市場居酒屋群", lat:26.215788, lng:127.696152,
+    note:"18:00-23:00｜¥2000-3500｜炭火烤雞串｜安里站2分" },
+  { type:"food", name:"ブルーシール 國際通り店", lat:26.215376, lng:127.685059,
+    note:"10:00-22:30(五六至23:00)｜¥400起｜紅芋・鹽味餅乾" },
+  { type:"food", name:"美ら花 別邸", lat:26.532351, lng:127.95919,
+    note:"11:00-15:00/17:00-22:00 週三休｜¥2000-4000｜⭐距名護飯店步行1分" },
+  { type:"food", name:"Gyu Ton Pan", lat:26.539755, lng:127.949226,
+    note:"12:00-21:00 週三休｜¥4000-7000｜100%純血阿古豬涮涮鍋｜建議預約" },
+  { type:"food", name:"きしもと食堂 本部本店", lat:26.660124, lng:127.895851,
+    note:"11:00-17:30 賣完即打烊 週三休｜¥700-900｜手打沖繩そば｜大排長龍" },
+  { type:"food", name:"道の駅 許田", lat:26.552133, lng:127.969515,
+    note:"餐飲約11:00-14:00｜¥100-500｜天婦羅｜也賣水族館折扣票(現金)" },
+  { type:"food", name:"中本鮮魚てんぷら店", lat:26.1367, lng:127.755966,
+    note:"10:30-18:00 週四休｜¥80-150/個｜沖繩天婦羅名店｜天天排隊" },
+  { type:"food", name:"A&W 那覇空港店", lat:26.1958, lng:127.6458,
+    note:"約7:00-20:00｜¥800-1500｜Root Beer吃到飽｜國內線3F" },
+  { type:"food", name:"瑞泉酒造", lat:26.215097, lng:127.720818,
+    note:"9:00-17:00｜泡盛百年酒廠｜可免費見學+試飲｜週日不開放見學" },
+
+  /* ---- 購物 ---- */
+  { type:"shop", name:"御菓子御殿 国際通り松尾店", lat:26.213926, lng:127.681442,
+    note:"09:00-22:00 年中無休｜紅芋塔6入¥800起｜県庁前站步行3分" },
+  { type:"shop", name:"塩屋(まーすやー)国際通り店", lat:26.21669, lng:127.689697,
+    note:"10:00-22:00 無休｜¥300-1500｜日本最大鹽專門店130種鹽" },
+  { type:"shop", name:"育陶園 本店", lat:26.212847, lng:127.692055,
+    note:"12:00-18:00 週三休｜茶碗¥1000起/風獅爺¥2000起｜壺屋燒窯元" },
+  { type:"shop", name:"育陶園 壺屋のいりぐち", lat:26.213745, lng:127.690483,
+    note:"10:00-17:45 週四休｜2025/10新開幕" },
+  { type:"shop", name:"くば笠屋 平和通り本店", lat:26.215666, lng:127.688675,
+    note:"10:00-19:00｜玻璃杯¥1500起｜可現場吹製體驗" },
+  { type:"shop", name:"恩納ガラス工房", lat:26.454067, lng:127.819565,
+    note:"8:00-18:00｜¥1000-3000｜⭐名護→那霸移動日順路" },
+  { type:"shop", name:"MAJUN OKINAWA 那覇本店", lat:26.213757, lng:127.690254,
+    note:"10:00-19:00｜¥8700起｜かりゆしウェア代表品牌" },
+  { type:"shop", name:"Mango House 国際通1号店", lat:26.21735, lng:127.691139,
+    note:"10:00-22:00｜¥5000-7000起｜沖繩襯衫" },
+  { type:"shop", name:"Cooper! 古著", lat:26.214252, lng:127.685722,
+    note:"12:00-21:00 週一休｜浮島通り｜美式+日系古著" },
+  { type:"shop", name:"La Cucina ソープ・ブティック", lat:26.214312, lng:127.685715,
+    note:"12:00-18:00 週六日休｜手工皂¥500起｜月桃・海泥" },
+  { type:"shop", name:"唐吉訶德 国際通り店", lat:26.216045, lng:127.687714,
+    note:"24小時營業｜B1-4F共5層｜美妝零食電器" },
+  { type:"shop", name:"マツモトキヨシ あさと国際通り店", lat:26.21847, lng:127.694313,
+    note:"10:00-22:00｜自有品牌matsukiyo LAB CP值高" },
+  { type:"shop", name:"大国薬品 国際通りむつみ橋店", lat:26.215954, lng:127.688057,
+    note:"主打「日本全國最便宜」標示" },
+  { type:"shop", name:"MAJUN OUTLET 糸滿店", lat:26.14032, lng:127.66095,
+    note:"10:00-19:00｜比本店便宜｜需自駕" },
+  { type:"shop", name:"ASHIBINAA Outlet", lat:26.158874, lng:127.657082,
+    note:"10:00-20:00｜機場車程15分｜回程順路" },
+
+  /* 新增地點：照上面格式加一筆，地圖與候選清單會自動更新 */
 ];
 
 /* =========================================================
@@ -696,10 +853,11 @@ const DAYS = [
 ];
 
 const STYLE = {
-  airport:{ c:"#ff7a5c", e:"✈️" },
-  hotel:  { c:"#0b6e7f", e:"🏨" },
-  spot:   { c:"#14b8bd", e:"📸" },
-  food:   { c:"#ffc043", e:"🍜" }
+  airport:{ c:"#ff7a5c", e:"✈️", label:"機場" },
+  hotel:  { c:"#0b6e7f", e:"🏨", label:"飯店" },
+  spot:   { c:"#14b8bd", e:"📸", label:"景點" },
+  food:   { c:"#ffc043", e:"🍜", label:"美食" },
+  shop:   { c:"#a855c7", e:"🛍", label:"購物" }
 };
 
 const isTouch = window.matchMedia("(max-width:700px)").matches;
@@ -719,7 +877,10 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 }).addTo(map);
 map.on("click", () => map.scrollWheelZoom.enable());
 
+const layers = {};              // 每個類別一個圖層群組
+const counts = {};
 const bounds = [];
+
 PLACES.forEach(p => {
   const s = STYLE[p.type] || STYLE.spot;
   const icon = L.divIcon({
@@ -727,12 +888,44 @@ PLACES.forEach(p => {
     html:`<div class="pin-ico" style="width:30px;height:30px;background:${s.c}"><span>${s.e}</span></div>`
   });
   const q = encodeURIComponent(p.name + " 沖縄");
-  L.marker([p.lat, p.lng], { icon })
-   .addTo(map)
-   .bindPopup(`<b>${p.name}</b>${p.note ? p.note + "<br>" : ""}
-     <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>`);
+  const m = L.marker([p.lat, p.lng], { icon })
+    .bindPopup(`<b>${p.name}</b>${p.note ? p.note.replace(/｜/g, "<br>") + "<br>" : ""}
+      <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>`);
+  (layers[p.type] = layers[p.type] || L.layerGroup().addTo(map)).addLayer(m);
+  counts[p.type] = (counts[p.type] || 0) + 1;
   bounds.push([p.lat, p.lng]);
 });
+
+/* 圖例＝可點擊的圖層開關 */
+const legend = document.getElementById("legend");
+Object.keys(STYLE).forEach(type => {
+  if (!counts[type]) return;
+  const s = STYLE[type];
+  const b = document.createElement("button");
+  b.className = "lg on";
+  b.type = "button";
+  b.innerHTML = `<i class="dot" style="background:${s.c}"></i>${s.label}<em>${counts[type]}</em>`;
+  b.addEventListener("click", () => {
+    const on = b.classList.toggle("on");
+    if (on) map.addLayer(layers[type]); else map.removeLayer(layers[type]);
+  });
+  legend.appendChild(b);
+});
+/* 全部開／關 */
+const all = document.createElement("button");
+all.className = "lg alltoggle"; all.type = "button"; all.textContent = "只看景點";
+all.addEventListener("click", () => {
+  const spotOnly = all.textContent === "只看景點";
+  [...legend.querySelectorAll("button.lg:not(.alltoggle)")].forEach((b, i) => {
+    const type = Object.keys(STYLE).filter(t => counts[t])[i];
+    const want = spotOnly ? type === "spot" : true;
+    b.classList.toggle("on", want);
+    if (want) map.addLayer(layers[type]); else map.removeLayer(layers[type]);
+  });
+  all.textContent = spotOnly ? "全部顯示" : "只看景點";
+});
+legend.appendChild(all);
+
 if (bounds.length > 1) map.fitBounds(bounds, { padding: isTouch ? [30,30] : [55,55] });
 
 /* ---------- 每日行程渲染 ---------- */
@@ -788,7 +981,7 @@ function renderPool(type, el){
   const list = PLACES.filter(p => p.type === type);
   if (!list.length) {
     el.innerHTML = `<div class="soon" style="grid-column:1/-1">
-      <span class="big">${type === "spot" ? "🐠" : "🍽"}</span>
+      <span class="big">${ {spot:"🐠", food:"🍽", shop:"🛍"}[type] }</span>
       <b>還在蒐集中</b>想到就丟進來，會同時出現在地圖和這裡。</div>`;
     return;
   }
@@ -805,6 +998,7 @@ function renderPool(type, el){
 }
 renderPool("spot", document.getElementById("poolSpot"));
 renderPool("food", document.getElementById("poolFood"));
+renderPool("shop", document.getElementById("poolShop"));
 
 /* ---------- 倒數 ---------- */
 const dep = new Date("2026-11-07T00:00:00+08:00");
