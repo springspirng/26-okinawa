@@ -275,6 +275,14 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .fact{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:.86rem;background:#f7fbfb;border-radius:11px;padding:9px 13px}
 .fact b{color:var(--ocean);font-weight:700;white-space:nowrap}
 .modal h4{margin:0 0 10px;font-size:.8rem;letter-spacing:.14em;color:var(--ink-soft);font-weight:700}
+.blogs{display:grid;gap:9px;margin-bottom:22px}
+.blogs a{display:flex;gap:11px;align-items:flex-start;text-decoration:none;color:var(--ink);
+  background:linear-gradient(100deg,rgba(255,192,67,.1),rgba(255,192,67,.03));
+  border:1.5px solid rgba(255,192,67,.45);border-radius:13px;padding:12px 15px;transition:.18s}
+.blogs a:hover{border-color:var(--sun);transform:translateY(-1px);box-shadow:var(--shadow)}
+.blogs em{font-style:normal;font-size:1.05rem;line-height:1.4}
+.blogs .bt{display:block;font-size:.88rem;font-weight:600;line-height:1.5}
+.blogs .bs{display:block;font-size:.76rem;color:var(--ink-soft);margin-top:3px}
 .links{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr))}
 .links a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);background:#fff;
   border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:.85rem;font-weight:600;transition:.18s}
@@ -680,6 +688,10 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
     <div class="modal-body">
       <p class="modal-desc" id="mDesc"></p>
       <div class="facts" id="mFacts"></div>
+      <div id="mBlogWrap" hidden>
+        <h4>別人的實際心得</h4>
+        <div class="blogs" id="mBlogs"></div>
+      </div>
       <h4>相關連結</h4>
       <div class="links" id="mLinks"></div>
     </div>
@@ -865,47 +877,96 @@ const PLACES = [
   { type:"food", name:"ゆうなんぎい", lat:26.214465, lng:127.68186,
     note:"12:00-15:00/17:30-22:30 週日休｜¥2000-4000｜ラフテー｜不接受預約要排隊｜県庁前站5分",
     desc:"那霸最有名的沖繩家庭料理老店之一，招牌是用自家味噌調味的ラフテー（滷豬五花）。不接受預約，用餐時段一定要排隊。就在久茂地、離我們飯店走路 5 分鐘。",
-    site:"https://tabelog.com/okinawa/A4701/A470101/47000186/" },
+    site:"https://tabelog.com/okinawa/A4701/A470101/47000186/",
+    blogs:[
+      { t:"傳香近半世紀的國際通沖繩料理老店", s:"酒雄瘋日本｜實點 7 道菜", u:"https://www.sakehero.com/2014-08-10-527/" },
+      { t:"三天內二訪，價位合理 CP 值高", s:"Cinmily 荒謬女子奇遇記", u:"https://emily110323.pixnet.net/blog/posts/13356484230" },
+      { t:"國際通道地沖繩料理，在地人的口袋名單", s:"一娃一貝，一期一會", u:"https://1wa1bai.com/oka-traditional-food/" }
+    ] },
   { type:"food", name:"ステーキハウス88 國際通り店", lat:26.216269, lng:127.688515,
     note:"11:00-23:00 無休｜午¥2000起/晚¥5000-10000｜石垣牛｜可網路預約",
     desc:"沖繩代表性的牛排連鎖老字號，從石垣牛到美國牛都有，觀光客與在地人都吃。營業到 23:00，逛完國際通吃消夜牛排是沖繩的一種儀式感。",
-    site:"https://s88.co.jp/shop/steak88/kokusaidori/" },
+    site:"https://s88.co.jp/shop/steak88/kokusaidori/",
+    blogs:[
+      { t:"老字號牛排館心得：交通、訂位、菜單、優惠票券", s:"Stancy Teacher 美味異想世界", u:"https://stancylife.com/steak88/" },
+      { t:"88 牛排食記", s:"抹茶控（痞客邦）", u:"https://queenhateking.pixnet.net/blog/posts/1030124080" }
+    ] },
   { type:"food", name:"榮町市場居酒屋群", lat:26.215788, lng:127.696152,
     note:"18:00-23:00｜¥2000-3500｜炭火烤雞串｜安里站2分",
     desc:"入夜後整個市場變成居酒屋街，炭火烤雞串、內臟料理、泡盛，價位親民、氣氛很在地。人氣店常滿，建議傍晚早點到。",
-    site:"https://www.smartmagazine.jp/okinawa/article/meal/22143/" },
+    site:"https://www.smartmagazine.jp/okinawa/article/meal/22143/",
+    blogs:[
+      { t:"回到昭和時代：榮町市場散步 × 餃子店玉玲瓏", s:"橋媽。旅行二三事", u:"https://eisei86.pixnet.net/blog/post/279387944" },
+      { t:"夜晚會化身為居酒屋的老市場", s:"貝哥 照玩誌", u:"https://baygolee.com/sakaemachi/" },
+      { t:"榮町市場喝 2 間：でんすけ商店、燒鳥大統領", s:"貝哥 照玩誌", u:"https://baygolee.com/sakaemachi-2/" }
+    ] },
   { type:"food", name:"ブルーシール 國際通り店", lat:26.215376, lng:127.685059,
     note:"10:00-22:30(五六至23:00)｜¥400起｜紅芋・鹽味餅乾",
     desc:"源自美軍基地文化的沖繩在地冰淇淋，招牌是紅芋與鹽味餅乾口味。逛國際通走累了的標準補給站。",
-    site:"https://www.blueseal.co.jp/" },
+    site:"https://www.blueseal.co.jp/",
+    blogs:[
+      { t:"美式濃郁混搭在地風味，必吃鹽金楚糕", s:"許傑，旅行圖中", u:"https://journey.tw/blue-seal-okinawa/" },
+      { t:"國際通必吃：體驗在地特色食材", s:"阿君的玩食天堂", u:"https://ajunfun.tw/blue-seal/" },
+      { t:"塩金楚糕 & 紅芋 PUZO 起司餅乾實吃", s:"貝哥 照玩誌", u:"https://baygolee.com/blue-seal-kokusai-dori/" }
+    ] },
   { type:"food", name:"美ら花 別邸", lat:26.532351, lng:127.95919,
-    note:"11:00-15:00/17:00-22:00 週三休｜¥2000-4000｜⭐距名護飯店步行1分",
-    desc:"距離名護飯店走路 1 分鐘的沖繩郷土料理店，沖繩そば與家常菜都有，160 席空間寬敞。因為飯店不供應晚餐，11/7 剛到那天吃這裡最省事。建議先訂位。",
-    site:"https://www.hotpepper.jp/strJ000597095/" },
-  { type:"food", name:"Gyu Ton Pan", lat:26.539755, lng:127.949226,
-    note:"12:00-21:00 週三休｜¥4000-7000｜100%純血阿古豬涮涮鍋｜建議預約",
-    desc:"主打 100% 純血阿古豬涮涮鍋與沖繩和牛燒烤，離名護飯店走路 9 分鐘。阿古豬油脂帶甜、入口即化，是沖繩必吃。建議前一天先電話訂位。",
-    site:"https://www.hotpepper.jp/strJ000741719/" },
+    note:"晚餐17:00-22:00(LO21:30) 週三休｜2026/5起已取消午餐｜¥2000-4000｜⭐距名護飯店步行1分｜0980-53-0331",
+    desc:"距離名護飯店走路 1 分鐘的沖繩郷土料理店，沖繩そば與琉球料理都有，160 席空間寬敞。因為飯店不供應晚餐，11/7 剛到那天吃這裡最省事。注意 2026 年 5 月起已取消午餐、只剩晚餐時段，出發前建議先致電確認並訂位。",
+    site:"https://www.hotpepper.jp/strJ000597095/",
+    blogs:[
+      { t:"店內座位、菜單與接送服務介紹（日文）", s:"おきなわしあわせブログ", u:"https://okinawashiawase.com/churahana/" }
+    ] },
+  { type:"food", name:"おばぁの家", lat:26.5361, lng:127.9455,
+    note:"17:00-23:00(LO22:30)｜不定休｜¥4000-6000｜⭐距名護飯店車程3-5分｜050-5485-5676",
+    desc:"古民家風格的燒肉與沖繩料理店，就在幸喜聚落裡、離飯店只要 3–5 分鐘車程，是原本 Gyu Ton Pan 歇業後最方便的替代選擇。招牌是 A5 黑毛和牛與沖繩阿古豬。建議下午 3 點後致電訂位。",
+    site:"https://obanoya.gorp.jp/" },
+  { type:"food", name:"島豚七輪焼 満味", lat:26.6025, lng:127.9825,
+    note:"17:00-22:00｜週日一公休｜¥5000-6000｜車程12-18分｜0980-53-5383",
+    desc:"名護在地超人氣的島豬炭火燒肉，用七輪炭爐烤島豬與內臟，據說湯姆克魯斯也來過。開店就客滿，務必提前訂位或早點到候位。週日、週一公休要注意。",
+    site:"https://manmi-yanbaru.com/" },
+  { type:"food", name:"百年古家 大家(うふやー)", lat:26.5836, lng:127.9989,
+    note:"午11:00-15:30/晚17:30-21:00｜全年無休｜¥4000-5000｜車程18-25分｜0980-53-0280",
+    desc:"百年古民家改建的琉球料理餐廳，庭園裡有瀑布造景，氣氛是名護一帶最特別的。沖繩そば與傳統料理都有。晚餐採 90 分鐘制、可預約 17:30／18:00／19:30 時段，建議先訂。",
+    site:"https://ufuya.com/" },
   { type:"food", name:"きしもと食堂 本部本店", lat:26.660124, lng:127.895851,
     note:"11:00-17:30 賣完即打烊 週三休｜¥700-900｜手打沖繩そば｜大排長龍",
     desc:"明治 38 年（1905）創業，現存最老的沖繩そば店之一，手打麵配柴魚湯頭。賣完就打烊、週三公休，建議中午前到。可以跟美麗海水族館排同一天。",
-    site:"https://www.tabirai.net/sightseeing/column/0003897.aspx" },
+    site:"https://www.tabirai.net/sightseeing/column/0003897.aspx",
+    blogs:[
+      { t:"1905 年創立，元祖木灰沖繩麵與限量炊飯", s:"Addicted。戒不掉的癮", u:"https://elisa48.pixnet.net/blog/posts/4045573206" },
+      { t:"百年老店岸本食堂～手打沖繩麵 × 限量炊飯", s:"凱特莉亞（痞客邦）", u:"https://annashalia.pixnet.net/blog/posts/8230368799" }
+    ] },
   { type:"food", name:"道の駅 許田", lat:26.552133, lng:127.969515,
     note:"餐飲約11:00-14:00｜¥100-500｜天婦羅｜也賣水族館折扣票(現金)",
     desc:"北部最熱門的休息站，天婦羅、沖繩甜甜圈サーターアンダギー等小吃便宜好吃。重點是這裡有賣美麗海水族館的折扣票（大人 ¥1850，只收現金），去水族館前先繞過來。",
-    site:"https://www.okinawastory.jp/spot/1019" },
+    site:"https://www.okinawastory.jp/spot/1019",
+    blogs:[
+      { t:"自駕必訪：伴手禮 & 最便宜美麗海水族館票", s:"We4 Travel", u:"https://we4-travel.com/michinoeki-kyoda/" },
+      { t:"買優惠券和休息的好所在", s:"林老獅冽（痞客邦）", u:"https://linrosely.pixnet.net/blog/post/349146766" }
+    ] },
   { type:"food", name:"中本鮮魚てんぷら店", lat:26.1367, lng:127.755966,
     note:"10:30-18:00 週四休｜¥80-150/個｜沖繩天婦羅名店｜天天排隊",
     desc:"奧武島上的天婦羅名店，天天排隊。沖繩天婦羅麵衣厚實偏鹹香，可以直接吃不用沾醬，一個 ¥80–150 的銅板價。週四公休。",
-    site:"https://okinawa-aruki.com/nakamototenpura/" },
+    site:"https://okinawa-aruki.com/nakamototenpura/",
+    blogs:[
+      { t:"食在沖繩：中本鮮魚天婦羅店", s:"珍妮佛的小旅行", u:"https://jenniferhu1104.pixnet.net/blog/post/222622269" },
+      { t:"奧武島天婦羅，老字號平價好味道", s:"橋媽。旅行二三事", u:"https://eisei86.pixnet.net/blog/post/102247548" }
+    ] },
   { type:"food", name:"A&W 那覇空港店", lat:26.1958, lng:127.6458,
     note:"約7:00-20:00｜¥800-1500｜Root Beer吃到飽｜國內線3F",
     desc:"沖繩人叫它「エンダー」的美式速食，招牌是可以續杯的麥根沙士 Root Beer 與 Curly Fries。就在國內線航廈 3 樓，回程候機剛好。",
-    site:"https://www.awok.co.jp/shopsearch/nahaairport/" },
+    site:"https://www.awok.co.jp/shopsearch/nahaairport/",
+    blogs:[
+      { t:"沖繩限定速食店，作者在那霸機場吃了好幾次", s:"福寶媽衝日本", u:"https://gogojp.tw/aw-okinawa/" },
+      { t:"A&W 美式漢堡與麥根沙士介紹（國際通分店，同品牌參考）", s:"踢賴旅遊", u:"https://www.tylinnetravel.tw/awrestaurants-okinawa/" }
+    ] },
   { type:"food", name:"瑞泉酒造", lat:26.215097, lng:127.720818,
     note:"9:00-17:00｜泡盛百年酒廠｜可免費見學+試飲｜週日不開放見學",
     desc:"明治 20 年創業的百年泡盛酒廠，可以免費見學參觀製程並試飲，古酒「青龍 3 年」是經典款。注意週日不開放見學。",
-    site:"https://www.zuisen.co.jp/" },
+    site:"https://www.zuisen.co.jp/",
+    blogs:[
+      { t:"首里城旁的泡盛老酒廠，免費見學試飲流程", s:"tokyo.taipei", u:"https://www.tokyo.taipei/2019/10/zuisen-distillery.html" }
+    ] },
 
   /* ---- 購物 ---- */
   { type:"shop", name:"御菓子御殿 国際通り松尾店", lat:26.213926, lng:127.681442,
@@ -1195,7 +1256,18 @@ function openPlace(p){
       return `<div class="fact"><b>${ic}</b><span>${x.replace(/^⚠️/, "")}</span></div>`;
     }).join("");
 
-  /* 連結：官網 + Google 地圖 + 別人的介紹 */
+  /* 別人的實際心得（人工查證過的文章） */
+  const bw = document.getElementById("mBlogWrap");
+  if (p.blogs && p.blogs.length) {
+    document.getElementById("mBlogs").innerHTML = p.blogs.map(b =>
+      `<a href="${b.u}" target="_blank" rel="noopener"><em>📖</em><span>
+         <span class="bt">${b.t}</span><span class="bs">${b.s}</span></span></a>`).join("");
+    bw.hidden = false;
+  } else {
+    bw.hidden = true;
+  }
+
+  /* 連結：官網 + Google 地圖 + 搜尋 */
   const qName = encodeURIComponent(p.name);
   const qJP   = encodeURIComponent(p.name + " 沖縄");
   const L = [];
