@@ -181,6 +181,7 @@ h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
 .leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;margin:14px 16px;font-size:.88rem;line-height:1.6}
 .leaflet-popup-content b{font-size:.98rem;display:block;margin-bottom:3px}
 .leaflet-popup-content a{font-weight:600;text-decoration:none}
+.poprec{display:inline-block;background:#ff7a5c;color:#fff;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-bottom:4px}
 
 /* ---------- CHECKLIST ---------- */
 .packs{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(255px,100%),1fr))}
@@ -249,12 +250,16 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .empty-slot{color:#b9c9cc;font-size:.86rem;font-style:normal;padding:4px 0}
 /* ---------- 候選清單 ---------- */
 .pool{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr))}
-.pitem{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px 16px;box-shadow:var(--shadow);position:relative}
-.pitem h4{margin:0 0 3px;font-size:.96rem;font-weight:700;display:flex;align-items:center;gap:7px}
+.pitem{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 16px 15px;box-shadow:var(--shadow);position:relative;display:flex;flex-direction:column}
+.pitem h4{margin:0 0 3px;font-size:.96rem;font-weight:700;display:flex;align-items:flex-start;gap:7px}
 .pitem .pnote{font-size:.82rem;color:var(--ink-soft);margin:0}
-.pitem .used{position:absolute;top:12px;right:12px;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--sand-d);color:var(--ocean-d)}
+.pitem .badges{display:flex;gap:5px;align-items:center;justify-content:flex-end;margin-bottom:9px;flex-wrap:wrap}
+.pitem .used{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--sand-d);color:var(--ocean-d)}
+.pitem .rec{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:999px;
+  background:linear-gradient(120deg,#ff7a5c,#ff9f7c);color:#fff;box-shadow:0 2px 6px rgba(255,122,92,.35);white-space:nowrap}
 .pitem .used.no{background:#eef4f5;color:#9ab0b4}
 .pitem a{display:inline-block;margin-top:8px;font-size:.78rem;text-decoration:none;font-weight:600}
+.pitem .more{margin-top:auto;padding-top:9px}
 .pool-hint{font-size:.85rem;color:var(--ink-soft);margin:0 0 14px}
 /* ---------- 詳細彈窗 ---------- */
 .modal-bg{position:fixed;inset:0;z-index:2000;background:rgba(6,40,48,.55);backdrop-filter:blur(4px);
@@ -265,6 +270,8 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .modal-bg.open .modal{transform:none}
 .modal-head{padding:22px 24px 18px;color:#fff;position:relative}
 .modal-head .kind{font-size:.72rem;font-weight:700;letter-spacing:.16em;opacity:.9;text-transform:uppercase}
+.modal-head .mrec{display:inline-block;margin-left:8px;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.45);
+  padding:2px 10px;border-radius:999px;letter-spacing:.04em;font-size:.7rem}
 .modal-head h3{margin:6px 0 0;font-size:1.35rem;font-weight:800;line-height:1.3;padding-right:36px}
 .modal-x{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
   background:rgba(255,255,255,.22);color:#fff;font-size:1.1rem;line-height:1;font-family:inherit;transition:.18s}
@@ -722,7 +729,7 @@ const PLACES = [
     site:"https://www.almont.jp/naha/" },
 
   /* ---- 景點 ---- */
-  { type:"spot", name:"沖繩美麗海水族館", lat:26.694369, lng:127.878038,
+  { type:"spot", name:"沖繩美麗海水族館", rec:"史哥", lat:26.694369, lng:127.878038,
     note:"8:30-18:30(入館至17:30)｜大人¥2180｜停留2.5-3.5h｜⚠️每週三為部分開園日",
     desc:"沖繩的招牌景點。核心是「黑潮之海」大水槽，養著鯨鯊與鬼蝠魟，可以看餵食解說；另有海豚劇場、海龜館。隔壁海洋博公園、翡翠海灘、熱帶夢想中心可以一起排半天以上。",
     site:"https://churaumi.okinawa/",
@@ -731,7 +738,7 @@ const PLACES = [
       { t:"沖繩必去！8.7 公尺巨大鯨鯊", s:"艾布蕾（痞客邦）", u:"https://lovecremebrulee.pixnet.net/blog/post/227512823" },
       { t:"黑潮鯨鯊餵食秀＋海洋博公園免費海豚表演", s:"燕窩（痞客邦）", u:"https://purpleswallow.pixnet.net/blog/post/44185999" }
     ] },
-  { type:"spot", name:"古宇利島・古宇利大橋", lat:26.701021, lng:128.020002,
+  { type:"spot", name:"古宇利島・古宇利大橋", rec:"史哥", lat:26.701021, lng:128.020002,
     note:"全天｜免費(停車¥100起)｜停留1.5-3h｜心形岩看退潮時間",
     desc:"開上約 2 公里的跨海大橋就是全程重點，兩側都是透明度極高的海。島北側「ティーヌ浜」有網美必拍的心形岩，受潮汐影響大，去之前查一下退潮時間。",
     site:"https://www.nakijinson.jp/",
@@ -740,7 +747,7 @@ const PLACES = [
       { t:"古宇利大橋／海灘／島の駅ソラハシ", s:"小瑜兒愛旅行（痞客邦）", u:"https://nancyik2001.pixnet.net/blog/posts/8234799008" },
       { t:"古宇利藍、白沙與夕陽交織的美景", s:"The Fairy Tale Of K", u:"https://kellyku.pixnet.net/blog/posts/1032198617" }
     ] },
-  { type:"spot", name:"今歸仁城跡", lat:26.692208, lng:127.927919,
+  { type:"spot", name:"今歸仁城跡", rec:"史哥", lat:26.692208, lng:127.927919,
     note:"8:00-18:00｜大人¥600｜停留1-1.5h｜世界遺產",
     desc:"琉球三大城跡之一，世界遺產。城牆沿著山脊蜿蜒起伏，登上高處可以遠眺東海，11 月乾季天氣穩定很好拍。門票含今歸仁村歷史文化中心。",
     site:"https://www.nakijinjoseki-osi.jp/",
@@ -764,7 +771,7 @@ const PLACES = [
       { t:"瀨底島水上活動、住宿與海景網美咖啡廳", s:"喵爸喵媽玩轉地球", u:"https://kimiyo.tw/sesoko-island/" },
       { t:"2024 翻新！不輸古宇利島的藍，透明海與白沙", s:"焦糖熱一點 Bite A Map", u:"https://www.biteamap.com/blog/post/sesokobeach/" }
     ] },
-  { type:"spot", name:"Orion Happy Park(啤酒工廠見學)", lat:26.58708, lng:127.98822,
+  { type:"spot", name:"Orion Happy Park(啤酒工廠見學)", rec:"史哥", lat:26.58708, lng:127.98822,
     note:"10:00-17:00(見學至16:00)｜⚠️每週日・週一休館｜20歲以上¥1000/19歲以下¥350｜停留約1h｜距名護飯店車程10-15分｜⚠️需事前預約 0570-00-4103",
     desc:"沖繩在地啤酒 Orion 的名護工場，可以參觀製程並在最後試飲現釀生啤，是名護市區的人氣行程。⚠️ 重要：每週日與週一休館，我們住名護的 11/8(日)、11/9(一) 都碰上公休，只有 11/7(六) 抵達當天下午有機會 —— 但 12:25 才落地、開到名護約 1 小時，見學最晚 16:00 入場，時間很趕且必須先線上預約。若想從容一點，可以在那霸期間(11/10-11/13 為週二至週五)安排北部一日遊時順道造訪。",
     site:"https://www.orionbeer.co.jp/happypark/",
@@ -804,7 +811,7 @@ const PLACES = [
       { t:"呼吸森林芬多精，健走 40 分抵瀑布", s:"商氏夫妻愛玩樂", u:"https://annie8472.pixnet.net/blog/post/8496424-%E6%B2%96%E7%B9%A9~%E6%AF%94%E5%9C%B0%E5%A4%A7%E6%BB%9D~%E5%91%BC%E5%90%B8%E6%A3%AE%E6%9E%97%E8%8A%AC%E5%A4%9A%E7%B2%BE%EF%BC%8C%E6%B1%97%E6%B0%B4%E6%B7%8B%E6%BC%93%E6%9A%A2" },
       { t:"比地大瀑布行山路線與資訊", s:"follo3me", u:"https://follo3me.com/route/overseas/hiji-otaki/" }
     ] },
-  { type:"spot", name:"萬座毛", lat:26.505009, lng:127.850256,
+  { type:"spot", name:"萬座毛", rec:"史哥", lat:26.505009, lng:127.850256,
     note:"11-2月 8:00-19:00｜¥100｜停留30-45分｜名護→那霸順路",
     desc:"突出東海的隆起珊瑚礁斷崖，形狀像大象鼻子，是沖繩最經典的海岸絕景。步道走一圈 20–30 分鐘，夕陽時段最美。從名護往那霸的路上順路。",
     site:"https://www.manzamo.jp/manzamou.php",
@@ -880,7 +887,7 @@ const PLACES = [
       { t:"生態農場、親子景點、森林般的咖啡館", s:"小妞的生活旅程", u:"https://may1215may.pixnet.net/blog/post/387449245" },
       { t:"賞花、餵羊、牛車、遊船河、超大鞦韆", s:"BOO2K", u:"https://boo2k.com/archives/75382" }
     ] },
-  { type:"spot", name:"普天滿宮", lat:26.292507, lng:127.777214,
+  { type:"spot", name:"普天滿宮", rec:"史哥", lat:26.292507, lng:127.777214,
     note:"社務所9:30-18:00｜洞穴參拜每小時10/30/50分出發(末場17:10)｜免費(御朱印¥300)｜停留1-1.5h｜那霸車程約30分｜現場登記不需預約",
     desc:"琉球八社之一，本殿蓋在一座全長 280 公尺的鐘乳石洞穴入口上方。洞穴需到社務所登記、由人員帶領入內，每場約 20 分鐘，洞內禁止飲食拍照講電話。洞中曾出土約 3.2 萬年前的遺跡，氣氛很特別，是沖繩少見能走進地底的神社。",
     site:"http://futenmagu.or.jp/",
@@ -928,7 +935,7 @@ const PLACES = [
       { t:"真的比較貴嗎？交通、環境、必吃美食攻略（2024 新館實訪）", s:"阿君的玩食天堂", u:"https://ajunfun.tw/makishi-public-market/" },
       { t:"市區最近的海鮮市場，海鮮控值得來嗎？", s:"柒柒夫妻543", u:"https://sainteat.tw/%E7%89%A7%E5%BF%97%E5%85%AC%E8%A8%AD%E5%B8%82%E5%A0%B4/" }
     ] },
-  { type:"spot", name:"波上宮", lat:26.22056, lng:127.671136,
+  { type:"spot", name:"波上宮", rec:"史哥", lat:26.22056, lng:127.671136,
     note:"授與所9:00-16:45｜免費｜單軌不可達建議計程車",
     desc:"琉球八社之首，蓋在海岸斷崖上，下面就是波の上海灘，景色很特別。可以求御朱印（¥300）。單軌到不了，建議搭計程車。",
     site:"http://naminouegu.jp/",
@@ -969,7 +976,7 @@ const PLACES = [
       { t:"深度攻略：參拜資訊與周邊午餐", s:"iambp6（痞客邦）", u:"https://iambp6.pixnet.net/blog/posts/9578138590" },
       { t:"自駕實走：齋場御嶽＋知念岬", s:"薛鐵支的冒險日誌", u:"https://h010121.pixnet.net/blog/post/47730462" }
     ] },
-  { type:"spot", name:"知念岬公園", lat:26.170826, lng:127.824308,
+  { type:"spot", name:"知念岬公園", rec:"史哥", lat:26.170826, lng:127.824308,
     note:"入園自由｜免費｜距齋場御嶽車程5分",
     desc:"免費的南部絕景公園，太平洋與久高島一望無際，草坡走一圈很舒服。距齋場御嶽只要 5 分鐘車程，兩個一定排一起。",
     site:"https://www.okinawastory.jp/spot/1414",
@@ -977,7 +984,7 @@ const PLACES = [
       { t:"眺望無敵海景！交通＆順遊齋場御嶽", s:"Wendy's Journey", u:"https://www.wendyjourney.com/chinenmisaki-park/" },
       { t:"南部超美海景公園（含蚊蟲提醒等現場細節）", s:"灰塵夫婦（痞客邦）", u:"https://zxc77544.pixnet.net/blog/post/366558106" }
     ] },
-  { type:"spot", name:"ニライカナイ橋", lat:26.167109, lng:127.819147,
+  { type:"spot", name:"ニライカナイ橋", rec:"史哥", lat:26.167109, lng:127.819147,
     note:"全天｜免費｜停留15-30分｜展望台無停車場",
     desc:"全長 660 公尺、高 80 公尺的雙橋大彎道，從展望台俯瞰太平洋的畫面是南部代表照。車子開不上展望台要走路，而且沒有停車場，需在附近路邊停。",
     site:"https://www.odnsym.com/spot/nirai.html",
@@ -1001,7 +1008,7 @@ const PLACES = [
       { t:"純白希臘商場，賞無敵海景日落", s:"福寶媽衝日本", u:"https://gogojp.tw/2017-03-07-311/" },
       { t:"半日遊！美食／交通／住宿攻略", s:"Wendy's Journey", u:"https://www.wendyjourney.com/umikaji-terrace/" }
     ] },
-  { type:"spot", name:"沖繩世界・玉泉洞", lat:26.140242, lng:127.748192,
+  { type:"spot", name:"沖繩世界・玉泉洞", rec:"史哥", lat:26.140242, lng:127.748192,
     note:"9:00-17:30｜大人¥2000｜停留2.5-3.5h｜鐘乳洞",
     desc:"主打東洋最大級的鐘乳洞玉泉洞（全長 5 公里、開放約 890 公尺），另有琉球王國城下町、毒蛇博物公園與エイサー太鼓表演，內容多要抓 3 小時。",
     site:"https://www.gyokusendo.co.jp/okinawaworld/",
@@ -1009,7 +1016,7 @@ const PLACES = [
       { t:"深入地心，探訪日本最大級鐘乳洞", s:"寶寶溫的育兒生活", u:"https://bobowin.blog/okinawa-world/" },
       { t:"玉泉洞與琉球文化深度體驗", s:"小妤愛旅行", u:"https://miniyublog.tw/okinawaworld/" }
     ] },
-  { type:"spot", name:"平和祈念公園", lat:26.095601, lng:127.723727,
+  { type:"spot", name:"平和祈念公園", rec:"史哥", lat:26.095601, lng:127.723727,
     note:"公園全天｜資料館9:00-17:00 大人¥300｜停留2-3h",
     desc:"沖繩戰終結之地。「平和之礎」刻著超過 24 萬名罹難者的姓名、不分國籍，摩文仁之丘可以俯瞰太平洋海蝕崖。資料館展示沉重但值得，園區另有大型兒童遊具區。補充：這裡位於「沖繩戰跡國定公園」範圍內——那是 1965 年指定、約 5,059 公頃的大範圍國定公園，但只有平和祈念公園這一區有完整的參觀設施與動線，其餘多是海岸保護區與零星慰靈碑，一般旅客走這裡就對了。",
     site:"https://www.peace-museum.okinawa.jp/",
@@ -1145,14 +1152,14 @@ const PLACES = [
     ] },
 
   /* ---- 購物 ---- */
-  { type:"shop", name:"永旺夢樂城沖繩來客夢 AEON Rycom", lat:26.314575, lng:127.796043,
+  { type:"shop", name:"永旺夢樂城沖繩來客夢 AEON Rycom", rec:"史哥", lat:26.314575, lng:127.796043,
     note:"專門店10:00-22:00｜餐廳11:00-23:00｜食品館8:00-23:00｜全年無休｜免費入場｜停留3-5h｜那霸車程30-40分",
     desc:"沖繩縣內最大的購物中心，約 220 間店舖。1 樓有與美麗海水族館合作的大水槽、5 樓有兒童公園，逛街吃飯看電影一次解決，也是沖繩最好用的雨天備案之一。那霸巴士總站有直達巴士約 41 分鐘。",
     site:"https://okinawarycom.aeonmall.jp/",
     blogs:[
       { t:"內有永旺優惠券，沖繩雨天景點", s:"小布少爺", u:"https://boo2k.com/aeon-mall-okinawa-rycom/" }
     ] },
-  { type:"shop", name:"San-A 浦添西海岸 PARCO CITY", lat:26.260212, lng:127.695946,
+  { type:"shop", name:"San-A 浦添西海岸 PARCO CITY", rec:"史哥", lat:26.260212, lng:127.695946,
     note:"購物10:00-22:00｜食品館9:00-23:00｜免費入場｜停車約4000格免費｜停留2-6h｜那霸車程15-20分",
     desc:"2019 年開幕、沖繩最新最大的購物中心之一，約 250 間店舖。2 樓有沖繩唯一的 180 度海景美食街，1 樓有全日本第二間吉伊卡哇主題餐廳。離那霸很近，單軌おもろまち站有免費接駁車，下雨天的首選。",
     site:"https://parcocity.jp/",
@@ -1160,14 +1167,14 @@ const PLACES = [
       { t:"2026 逛街攻略：180 度海景美食街×250 品牌", s:"阿君的玩食天堂", u:"https://ajunfun.tw/parco-city/" },
       { t:"必逛攻略：交通、美食、店鋪一覽", s:"A小姐的迷你世界", u:"https://alwa1919.pixnet.net/blog/post/122444897" }
     ] },
-  { type:"shop", name:"San-A 宜野灣 Convention City", lat:26.275093, lng:127.730797,
+  { type:"shop", name:"San-A 宜野灣 Convention City", rec:"史哥", lat:26.275093, lng:127.730797,
     note:"9:00-22:00(食品館至23:00)｜免費入場｜停留1.5-3h｜那霸車程15-20分｜098-897-3330",
     desc:"有全沖繩僅兩間的東急手創館 Tokyu Hands，另有 Right-on、松本清、DAISO、大阪王將等。規模比 PARCO CITY 小但更好逛完，適合半天採買。",
     site:"https://www.san-a.co.jp/conventioncity/",
     blogs:[
       { t:"沖繩必逛：Tokyu Hands／松本清／DAISO／大阪王將", s:"雨立今=霠", u:"https://wenkaiin.com/blog/post/2019%E6%B2%96%E7%B9%A9-%E6%B2%96%E7%B9%A9%E5%BF%85%E9%80%9B%EF%BC%9Asan-a%E5%AE%9C%E9%87%8E%E7%81%A3convention-city%EF%BC%8Ctokyu-hands-right-on-%E6%9D%BE%E6%9C%AC%E6%B8%85-%E7%8E%A9%E5%85%B7-daiso" }
     ] },
-  { type:"shop", name:"Costco 沖繩南城倉庫店", lat:26.160656, lng:127.791969,
+  { type:"shop", name:"Costco 沖繩南城倉庫店", rec:"史哥", lat:26.160656, lng:127.791969,
     note:"平日10:00-19:00(另有資料為至20:00，請先查官網)｜⚠️需會員卡才能入內｜停留1.5-2.5h｜那霸車程30-40分",
     desc:"沖繩第一家也是唯一一家 Costco，2024 年 8 月開幕。可以比較台日物價，牛肉、星巴克咖啡豆等是常見必買。位置在南城市，適合跟玉泉洞、齋場御嶽排同一天南部行程。⚠️ 必須持有會員卡才能進場，台灣的卡可通用。",
     site:"https://www.costco.co.jp/store-finder/Okinawa%20Nanjo",
@@ -1338,7 +1345,7 @@ PLACES.forEach(p => {
   });
   const q = encodeURIComponent(p.name + " 沖縄");
   const m = L.marker([p.lat, p.lng], { icon })
-    .bindPopup(`<b>${p.name}</b>${p.note ? p.note.replace(/｜/g, "<br>") + "<br>" : ""}
+    .bindPopup(`<b>${p.name}</b>${p.rec ? `<span class="poprec">👤 ${p.rec} 也推薦</span><br>` : ""}${p.note ? p.note.replace(/｜/g, "<br>") + "<br>" : ""}
       <a href="#" class="popup-more" data-name="${p.name.replace(/"/g, "&quot;")}">📖 詳細說明與介紹 →</a>`);
   (layers[p.type] = layers[p.type] || L.layerGroup().addTo(map)).addLayer(m);
   counts[p.type] = (counts[p.type] || 0) + 1;
@@ -1444,7 +1451,8 @@ function openPlace(p){
   const s = STYLE[p.type] || STYLE.spot;
   document.getElementById("mHead").style.background =
     `linear-gradient(120deg, ${s.c}, ${s.c}cc 70%, ${s.c}99)`;
-  document.getElementById("mKind").textContent = s.e + " " + s.label;
+  document.getElementById("mKind").innerHTML = s.e + " " + s.label +
+    (p.rec ? ` <span class="mrec">👤 ${p.rec} 也推薦</span>` : "");
   document.getElementById("mTitle").textContent = p.name;
   document.getElementById("mDesc").textContent = p.desc || "";
 
@@ -1515,7 +1523,10 @@ function renderPool(type, el){
   el.innerHTML = list.map((p, i) => {
     const on = planned.has(p.name);
     return `<div class="pitem" data-type="${type}" data-i="${i}" tabindex="0" role="button">
-      <span class="used ${on ? "" : "no"}">${on ? "已排入行程" : "備選"}</span>
+      <span class="badges">
+        ${p.rec ? `<span class="rec">👤 ${p.rec}</span>` : ""}
+        <span class="used ${on ? "" : "no"}">${on ? "已排入行程" : "備選"}</span>
+      </span>
       <h4>${STYLE[p.type].e} ${p.name}</h4>
       ${p.note ? `<p class="pnote">${p.note.replace(/｜/g, " · ")}</p>` : ""}
       <span class="more">看詳細說明與介紹 →</span>
