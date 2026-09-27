@@ -262,10 +262,10 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .pitem .more{margin-top:auto;padding-top:9px}
 .pool-hint{font-size:.85rem;color:var(--ink-soft);margin:0 0 14px}
 /* ---------- 詳細彈窗 ---------- */
-.modal-bg{position:fixed;inset:0;z-index:2000;background:rgba(6,40,48,.55);backdrop-filter:blur(4px);
+.modal-bg{position:fixed;inset:0;height:100%;height:100dvh;z-index:2000;background:rgba(6,40,48,.55);backdrop-filter:blur(4px);
   display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .22s}
 .modal-bg.open{opacity:1;pointer-events:auto}
-.modal{background:var(--card);border-radius:22px;max-width:560px;width:100%;max-height:86vh;overflow-y:auto;
+.modal{background:var(--card);border-radius:22px;max-width:560px;width:100%;max-height:86vh;max-height:86dvh;overflow-y:auto;overscroll-behavior:contain;position:relative;
   box-shadow:0 30px 80px rgba(6,74,88,.4);transform:translateY(14px) scale(.98);transition:transform .22s;-webkit-overflow-scrolling:touch}
 .modal-bg.open .modal{transform:none}
 .modal-head{padding:22px 24px 18px;color:#fff;position:relative}
@@ -273,9 +273,15 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .modal-head .mrec{display:inline-block;margin-left:8px;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.45);
   padding:2px 10px;border-radius:999px;letter-spacing:.04em;font-size:.7rem}
 .modal-head h3{margin:6px 0 0;font-size:1.35rem;font-weight:800;line-height:1.3;padding-right:36px}
-.modal-x{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;
-  background:rgba(255,255,255,.22);color:#fff;font-size:1.1rem;line-height:1;font-family:inherit;transition:.18s}
-.modal-x:hover{background:rgba(255,255,255,.38)}
+.modal-x{position:sticky;top:12px;float:right;z-index:5;margin:12px 12px -44px 0;width:36px;height:36px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.45);cursor:pointer;background:rgba(6,40,48,.38);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  color:#fff;font-size:1.1rem;line-height:1;font-family:inherit;transition:.18s;box-shadow:0 4px 14px rgba(6,40,48,.25)}
+.modal-x:hover{background:rgba(6,40,48,.55)}
+.modal-close-bottom{display:block;width:100%;margin-top:22px;padding:14px 16px;min-height:48px;border-radius:14px;
+  border:1.5px solid rgba(6,74,88,.18);background:#f2f7f8;color:var(--ink);font-family:inherit;font-size:.95rem;font-weight:700;line-height:1;
+  letter-spacing:.08em;cursor:pointer;transition:.18s;-webkit-tap-highlight-color:transparent}
+.modal-close-bottom:hover{background:#e6f0f2;border-color:rgba(6,74,88,.3)}
+.modal-close-bottom:active{transform:scale(.98)}
 .modal-body{padding:20px 24px 24px}
 .modal-desc{font-size:.94rem;line-height:1.85;margin:0 0 18px}
 .facts{display:grid;gap:8px;margin:0 0 20px}
@@ -360,7 +366,7 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
   .linkcard{flex:1 1 100%;padding:13px 15px}
   .soon{padding:30px 18px;font-size:.88rem}
   .modal-bg{padding:0;align-items:flex-end}
-  .modal{max-height:92vh;border-radius:22px 22px 0 0}
+  .modal{max-height:88vh;max-height:calc(100dvh - 16px - env(safe-area-inset-top));border-radius:22px 22px 0 0}
   .modal-head{padding:18px 18px 15px}
   .modal-head h3{font-size:1.15rem}
   .modal-body{padding:16px 18px calc(22px + env(safe-area-inset-bottom))}
@@ -687,10 +693,10 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 
 <div class="modal-bg" id="modalBg">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="modal-x" id="mClose" aria-label="關閉">✕</button>
     <div class="modal-head" id="mHead">
       <div class="kind" id="mKind"></div>
       <h3 id="mTitle"></h3>
-      <button class="modal-x" id="mClose" aria-label="關閉">✕</button>
     </div>
     <div class="modal-body">
       <p class="modal-desc" id="mDesc"></p>
@@ -701,6 +707,7 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
       </div>
       <h4>相關連結</h4>
       <div class="links" id="mLinks"></div>
+      <button class="modal-close-bottom" id="mCloseBottom" type="button">✕ 關閉</button>
     </div>
   </div>
 </div>
@@ -1501,15 +1508,29 @@ function openPlace(p){
   ).join("");
 
   modalBg.classList.add("open");
+  modalBg.querySelector(".modal").scrollTop = 0;
   document.body.style.overflow = "hidden";
 }
 function closePlace(){
   modalBg.classList.remove("open");
   document.body.style.overflow = "";
+  modalBg.querySelector(".modal").style.maxHeight = "";
 }
 document.getElementById("mClose").addEventListener("click", closePlace);
+document.getElementById("mCloseBottom").addEventListener("click", closePlace);
 modalBg.addEventListener("click", e => { if (e.target === modalBg) closePlace(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePlace(); });
+/* 從外部連結切回來時（iOS 網址列重新展開），重新套用版面，避免彈窗頂端被網址列蓋住 */
+function refitModal(){
+  if (!modalBg.classList.contains("open")) return;
+  const m = modalBg.querySelector(".modal");
+  const vv = window.visualViewport;
+  m.style.maxHeight = (vv && vv.height < window.innerHeight + 1 && window.innerWidth <= 700)
+    ? Math.round(vv.height - 16) + "px" : "";
+}
+window.addEventListener("pageshow", refitModal);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) setTimeout(refitModal, 60); });
+if (window.visualViewport) window.visualViewport.addEventListener("resize", refitModal);
 
 /* ---------- 景點／美食候選清單 ---------- */
 function renderPool(type, el){
