@@ -263,6 +263,18 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
 .pitem .used.no{background:#eef4f5;color:#9ab0b4}
 .pitem a{display:inline-block;margin-top:8px;font-size:.78rem;text-decoration:none;font-weight:600}
 .pitem .more{margin-top:auto;padding-top:9px}
+.pool-bar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.pchip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);padding:7px 15px;border-radius:999px;
+  font-family:inherit;font-size:.84rem;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:.18s;min-height:38px}
+.pchip em{font-style:normal;font-size:.72rem;font-weight:700;background:var(--sand-d);color:var(--ocean-d);padding:1px 7px;border-radius:999px}
+.pchip.on{border-color:var(--aqua);color:var(--ink);background:rgba(20,184,189,.08)}
+.pchip.stan.on{border-color:#ff7a5c;background:linear-gradient(120deg,rgba(255,122,92,.12),rgba(255,159,124,.06))}
+.pchip.stan.on em{background:rgba(255,122,92,.2);color:#c2452a}
+.pchip:disabled{opacity:.4;cursor:default}
+.pool-toggle{display:block;width:100%;margin-top:14px;padding:13px 16px;min-height:46px;border-radius:14px;border:1.5px dashed rgba(6,74,88,.25);
+  background:rgba(255,255,255,.7);font-family:inherit;font-size:.9rem;font-weight:700;color:var(--ocean);cursor:pointer;transition:.18s}
+.pool-toggle:hover{background:#fff;border-style:solid}
+.pool-toggle[hidden]{display:none}
 .pool-hint{font-size:.85rem;color:var(--ink-soft);margin:0 0 14px}
 /* ---------- 詳細彈窗 ---------- */
 .modal-bg{position:fixed;inset:0;height:100%;height:100dvh;z-index:2000;background:rgba(6,40,48,.55);backdrop-filter:blur(4px);
@@ -1951,31 +1963,67 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) setT
 if (window.visualViewport) window.visualViewport.addEventListener("resize", refitModal);
 
 /* ---------- 景點／美食候選清單 ---------- */
+const POOL_PREVIEW = 6;            // 收合時顯示幾張
 function renderPool(type, el){
-  const list = PLACES.filter(p => p.type === type);
-  if (!list.length) {
+  const all = PLACES.filter(p => p.type === type);
+  if (!all.length) {
     el.innerHTML = `<div class="soon" style="grid-column:1/-1">
       <span class="big">${ {spot:"🐠", food:"🍽", shop:"🛍"}[type] }</span>
       <b>還在蒐集中</b>想到就丟進來，會同時出現在地圖和這裡。</div>`;
     return;
   }
-  el.innerHTML = list.map((p, i) => {
-    const on = planned.has(p.name);
-    return `<div class="pitem" data-type="${type}" data-i="${i}" tabindex="0" role="button">
-      <span class="badges">
-        ${p.rec ? `<span class="rec">👤 ${p.rec}</span>` : ""}
-        <span class="used ${on ? "" : "no"}">${on ? "已排入行程" : "備選"}</span>
-      </span>
-      <h4>${STYLE[p.type].e} ${p.name}</h4>
-      ${p.note ? `<p class="pnote">${p.note.replace(/｜/g, " · ")}</p>` : ""}
-      <span class="more">看詳細說明與介紹 →</span>
-    </div>`;
-  }).join("");
-  el.querySelectorAll(".pitem").forEach(card => {
-    const open = () => openPlace(list[+card.dataset.i]);
-    card.addEventListener("click", open);
-    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+  const st = { stan:false, open:false };
+  const stanN = all.filter(p => p.rec === "史哥").length;
+
+  /* 工具列：只看史哥＋數量 */
+  const bar = document.createElement("div");
+  bar.className = "pool-bar";
+  bar.innerHTML = `<button type="button" class="pchip" data-f="all">全部<em>${all.length}</em></button>
+    <button type="button" class="pchip stan" data-f="stan"${stanN ? "" : " disabled"}>👤 只看史哥<em>${stanN}</em></button>`;
+  el.before(bar);
+
+  /* 底部：展開／收合 */
+  const tog = document.createElement("button");
+  tog.type = "button";
+  tog.className = "pool-toggle";
+  el.after(tog);
+
+  function draw(){
+    const list = st.stan ? all.filter(p => p.rec === "史哥") : all;
+    const shown = st.open ? list : list.slice(0, POOL_PREVIEW);
+    el.innerHTML = shown.map((p, i) => {
+      const on = planned.has(p.name);
+      return `<div class="pitem" data-i="${i}" tabindex="0" role="button">
+        <span class="badges">
+          ${p.rec ? `<span class="rec">👤 ${p.rec}</span>` : ""}
+          <span class="used ${on ? "" : "no"}">${on ? "已排入行程" : "備選"}</span>
+        </span>
+        <h4>${STYLE[p.type].e} ${p.name}</h4>
+        ${p.note ? `<p class="pnote">${p.note.replace(/｜/g, " · ")}</p>` : ""}
+        <span class="more">看詳細說明與介紹 →</span>
+      </div>`;
+    }).join("");
+    el.querySelectorAll(".pitem").forEach(card => {
+      const open = () => openPlace(shown[+card.dataset.i]);
+      card.addEventListener("click", open);
+      card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+    });
+    bar.querySelectorAll(".pchip").forEach(c => c.classList.toggle("on", (c.dataset.f === "stan") === st.stan));
+    const rest = list.length - POOL_PREVIEW;
+    tog.hidden = rest <= 0;
+    tog.innerHTML = st.open ? "收合 ▴" : `展開全部 ${list.length} 個（還有 ${rest} 個）▾`;
+    tog.setAttribute("aria-expanded", st.open);
+  }
+  bar.addEventListener("click", e => {
+    const c = e.target.closest(".pchip"); if (!c || c.disabled) return;
+    st.stan = c.dataset.f === "stan"; draw();
   });
+  tog.addEventListener("click", () => {
+    const wasOpen = st.open;
+    st.open = !st.open; draw();
+    if (wasOpen) el.closest("section").scrollIntoView({ behavior:"smooth", block:"start" });
+  });
+  draw();
 }
 renderPool("spot", document.getElementById("poolSpot"));
 renderPool("food", document.getElementById("poolFood"));
