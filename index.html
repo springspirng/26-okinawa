@@ -174,6 +174,9 @@ h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
 .lg em{font-style:normal;font-size:.72rem;font-weight:700;background:var(--sand-d);color:var(--ocean-d);padding:1px 7px;border-radius:999px;margin-left:2px}
 .lg.on em{background:rgba(20,184,189,.18)}
 .lg.alltoggle{opacity:1;border-style:dashed;color:var(--ink-soft)}
+.lg.stan{opacity:.7}
+.lg.stan.on{opacity:1;border-color:#ff7a5c;background:linear-gradient(120deg,rgba(255,122,92,.12),rgba(255,159,124,.06))}
+.lg.stan.on em{background:rgba(255,122,92,.2);color:#c2452a}
 .dot{width:11px;height:11px;border-radius:50%;flex:none}
 .pin-ico{display:grid;place-items:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2.5px solid #fff;box-shadow:0 3px 10px rgba(0,0,0,.3);font-size:14px}
 .pin-ico span{transform:rotate(45deg)}
@@ -552,7 +555,7 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
   </div>
   <div class="map-wrap"><div id="map"></div><div class="map-hint" id="mapHint">用兩指移動地圖</div></div>
   <div class="legend" id="legend"></div>
-  <p class="pool-hint" style="margin-top:10px">點上面的標籤可以開關圖層。圖釘為概略位置，導航請點彈窗裡的 Google 地圖連結。</p>
+  <p class="pool-hint" style="margin-top:10px">點上面的標籤可以開關圖層，點「👤 史哥」只看史哥推薦的點。圖釘為概略位置，導航請點彈窗裡的 Google 地圖連結。</p>
 </section>
 
 <!-- ============ 景點 ============ -->
@@ -1114,11 +1117,11 @@ const PLACES = [
     note:"17:00-22:00｜週日一公休｜¥5000-6000｜車程12-18分｜0980-53-5383",
     desc:"名護在地超人氣的島豬炭火燒肉，用七輪炭爐烤島豬與內臟，據說湯姆克魯斯也來過。開店就客滿，務必提前訂位或早點到候位。週日、週一公休要注意。",
     site:"https://manmi-yanbaru.com/" },
-  { type:"food", name:"百年古家 大家(うふやー)", lat:26.5836, lng:127.9989,
+  { type:"food", name:"百年古家 大家(うふやー)", rec:"史哥", lat:26.5836, lng:127.9989,
     note:"午11:00-15:30/晚17:30-21:00｜全年無休｜¥4000-5000｜車程18-25分｜0980-53-0280",
     desc:"百年古民家改建的琉球料理餐廳，庭園裡有瀑布造景，氣氛是名護一帶最特別的。沖繩そば與傳統料理都有。晚餐採 90 分鐘制、可預約 17:30／18:00／19:30 時段，建議先訂。",
     site:"https://ufuya.com/" },
-  { type:"food", name:"きしもと食堂 本部本店", lat:26.660124, lng:127.895851,
+  { type:"food", name:"きしもと食堂 本部本店", rec:"史哥", lat:26.660124, lng:127.895851,
     note:"11:00-17:30 賣完即打烊 週三休｜¥700-900｜手打沖繩そば｜大排長龍",
     desc:"明治 38 年（1905）創業，現存最老的沖繩そば店之一，手打麵配柴魚湯頭。賣完就打烊、週三公休，建議中午前到。可以跟美麗海水族館排同一天。",
     site:"https://www.tabirai.net/sightseeing/column/0003897.aspx",
@@ -1249,6 +1252,400 @@ const PLACES = [
     desc:"沖繩最大的 Outlet，距那霸機場車程 15 分鐘，回程當天順路。國際精品與運動品牌為主。",
     site:"https://www.ashibinaa.com/" },
 
+  /* ---- 史哥 Google 地圖「喜愛的地點」清單（沖繩美食，2026/09 匯入） ---- */
+  { type:"food", name:"燒肉五苑 北谷店", rec:"史哥", lat:26.329753, lng:127.777064,
+    note:"📍北谷・美國村｜燒肉",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=901572155353710026" },
+  { type:"food", name:"Shima Buns", rec:"史哥", lat:26.35996, lng:127.744052,
+    note:"📍北谷・美國村｜餅店・漢堡",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的餅店・漢堡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=12016436037052596200" },
+  { type:"food", name:"大石餃子店", rec:"史哥", lat:26.216153, lng:127.697472,
+    note:"📍那霸｜餃子・中華｜距那霸飯店約2.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的餃子・中華。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=1201575172698741624" },
+  { type:"food", name:"本格炭火焼き鳥 大統領", rec:"史哥", lat:26.216857, lng:127.697157,
+    note:"📍那霸｜炭火烤雞串｜距那霸飯店約1.9km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的炭火烤雞串。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3960922430994793481" },
+  { type:"food", name:"松原屋製菓", rec:"史哥", lat:26.215109, lng:127.68825,
+    note:"📍那霸｜沖繩甜點・和菓子｜距那霸飯店約1.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的沖繩甜點・和菓子。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=18016103608491565126" },
+  { type:"food", name:"花商 花生豆腐專門店", rec:"史哥", lat:26.213307, lng:127.688635,
+    note:"📍那霸｜花生豆腐・甜點｜距那霸飯店約1.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的花生豆腐・甜點。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=9665636533755391715" },
+  { type:"food", name:"旅の終わりの朝ごはん 美栄橋本店", rec:"史哥", lat:26.219736, lng:127.687966,
+    note:"📍那霸｜早餐定食｜距那霸飯店約1.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的早餐定食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11004474296683471621" },
+  { type:"food", name:"Zooton's", rec:"史哥", lat:26.214854, lng:127.682737,
+    note:"📍那霸｜漢堡｜距那霸飯店約0.5km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的漢堡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=10587088354417545083" },
+  { type:"food", name:"潛水員牛排", rec:"史哥", lat:26.594786, lng:127.959444,
+    note:"📍名護｜牛排｜距名護飯店約6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的牛排。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11373559165613792845" },
+  { type:"food", name:"Satchan Soba", rec:"史哥", lat:26.594061, lng:127.974766,
+    note:"📍名護｜沖繩麵｜距名護飯店約7km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=13147856863687273322" },
+  { type:"food", name:"琉球新麵 通堂拉麵 寄宮十字路店", rec:"史哥", lat:26.205641, lng:127.698886,
+    note:"📍那霸｜拉麵｜距那霸飯店約2.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=15505315588764166313" },
+  { type:"food", name:"Tonton Jacky Pork", rec:"史哥", lat:26.214855, lng:127.675429,
+    note:"📍那霸｜豬肉料理｜距那霸飯店約0.3km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的豬肉料理。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11565776106163013680" },
+  { type:"food", name:"元祖豚丼屋TONTON", rec:"史哥", lat:26.214619, lng:127.678207,
+    note:"📍那霸｜豚丼｜距那霸飯店約0.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的豚丼。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=17988209627026890309" },
+  { type:"food", name:"沖繩麵 EIBUN", rec:"史哥", lat:26.212705, lng:127.690079,
+    note:"📍那霸｜沖繩麵｜距那霸飯店約1.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3737313308873826172" },
+  { type:"food", name:"Shimabutaya Tonkatsu Dining", rec:"史哥", lat:26.217263, lng:127.681092,
+    note:"📍那霸｜炸豬排｜距那霸飯店約0.5km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的炸豬排。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=1770164731756527499" },
+  { type:"food", name:"燒肉五苑 Across Plaza古島站前店", rec:"史哥", lat:26.229118, lng:127.702068,
+    note:"📍那霸｜燒肉｜距那霸飯店約3.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11505386122111814684" },
+  { type:"food", name:"HUU'S COFFEE", rec:"史哥", lat:26.218065, lng:127.689963,
+    note:"📍那霸｜咖啡｜距那霸飯店約1.3km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=8011070197583578875" },
+  { type:"food", name:"oHacorte Bakery", rec:"史哥", lat:26.210695, lng:127.67912,
+    note:"📍那霸｜麵包・水果塔｜距那霸飯店約0.3km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的麵包・水果塔。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7980328628270718950" },
+  { type:"food", name:"Soup Curry and Chicken Confit SUNSHIN", rec:"史哥", lat:26.212488, lng:127.688907,
+    note:"📍那霸｜湯咖哩｜距那霸飯店約1.1km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的湯咖哩。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=6366043963307379206" },
+  { type:"food", name:"敘敘苑 沖繩浦添PARCO CITY店", rec:"史哥", lat:26.261879, lng:127.697558,
+    note:"📍浦添｜燒肉",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=2297627667242201216" },
+  { type:"food", name:"文鳥食堂", rec:"史哥", lat:26.128674, lng:127.665984,
+    note:"📍豐見城・系滿｜食堂・定食",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於豐見城・系滿的食堂・定食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=16240445671875532382" },
+  { type:"food", name:"JUMBO STEAK HAN'S Honten", rec:"史哥", lat:26.216412, lng:127.683611,
+    note:"📍那霸｜牛排｜距那霸飯店約0.6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的牛排。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=8354077871050153019" },
+  { type:"food", name:"Morning Hills (Hawaiian pancakes & coffee)", rec:"史哥", lat:26.4459, lng:127.846099,
+    note:"📍恩納｜鬆餅・早午餐",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於恩納的鬆餅・早午餐。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=13019733450316281095" },
+  { type:"food", name:"Te Da Ko沖繩麵", rec:"史哥", lat:26.248022, lng:127.720596,
+    note:"📍浦添｜沖繩麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=16057115307688297523" },
+  { type:"food", name:"A&W 牧港店", rec:"史哥", lat:26.266991, lng:127.72845,
+    note:"📍浦添｜漢堡・美式速食",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的漢堡・美式速食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3402481709461928961" },
+  { type:"food", name:"BLUE SEAL 牧港本店", rec:"史哥", lat:26.267335, lng:127.72143,
+    note:"📍浦添｜冰淇淋",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的冰淇淋。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=17318301334061017980" },
+  { type:"food", name:"人生酒場 沖繩店", rec:"史哥", lat:26.219305, lng:127.680441,
+    note:"📍那霸｜居酒屋｜距那霸飯店約0.7km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的居酒屋。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=9382000612216194211" },
+  { type:"food", name:"A&W 國際通松尾店", rec:"史哥", lat:26.213631, lng:127.680761,
+    note:"📍那霸｜漢堡・美式速食｜距那霸飯店約0.3km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的漢堡・美式速食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=748458426788649540" },
+  { type:"food", name:"康龍拉麵 那霸松山店", rec:"史哥", lat:26.216716, lng:127.678215,
+    note:"📍那霸｜拉麵｜距那霸飯店約0.4km｜康龍拉麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=1244821554013273680" },
+  { type:"food", name:"Hokkaido Ramen Hayatemaru", rec:"史哥", lat:26.31693, lng:127.755582,
+    note:"📍北谷・美國村｜拉麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7253004145011565448" },
+  { type:"food", name:"蒲田とんかつ 富善", rec:"史哥", lat:26.604465, lng:127.996866,
+    note:"📍名護｜炸豬排｜距名護飯店約9km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的炸豬排。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=4608314372161414350" },
+  { type:"food", name:"琉球新麵 通堂 琉大北口店", rec:"史哥", lat:26.257698, lng:127.766302,
+    note:"📍西原・宜野灣｜拉麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於西原・宜野灣的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=6024728075284912296" },
+  { type:"food", name:"牛排屋88 北谷店", rec:"史哥", lat:26.316772, lng:127.754867,
+    note:"📍北谷・美國村｜牛排",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的牛排。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=12446748904123655814" },
+  { type:"food", name:"燒肉 琉球の牛 恩納店", rec:"史哥", lat:26.451985, lng:127.805652,
+    note:"📍恩納｜燒肉",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於恩納的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=14508976097973711902" },
+  { type:"food", name:"Trip Cafe", rec:"史哥", lat:26.447357, lng:127.810206,
+    note:"📍恩納｜咖啡",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於恩納的咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=6664825983819812536" },
+  { type:"food", name:"Trip Cafe Okinawa(北谷)", rec:"史哥", lat:26.3211, lng:127.750383,
+    note:"📍北谷・美國村｜咖啡",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=5854553999567815060" },
+  { type:"food", name:"Nakamura Soba", rec:"史哥", lat:26.506712, lng:127.865334,
+    note:"📍恩納｜沖繩麵｜距名護飯店約9km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於恩納的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3915119288500179886" },
+  { type:"food", name:"Jaagaru Soba", rec:"史哥", lat:26.317051, lng:127.771545,
+    note:"📍北谷・美國村｜沖繩麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=14595177481118698272" },
+  { type:"food", name:"暖暮拉麵 那霸店", rec:"史哥", lat:26.217865, lng:127.687328,
+    note:"📍那霸｜拉麵｜距那霸飯店約1.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=9659077588439463663" },
+  { type:"food", name:"DRIVE IN リカリカワルミ", rec:"史哥", lat:26.669041, lng:127.992171,
+    note:"📍今歸仁・本部｜美式簡餐",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於今歸仁・本部的美式簡餐。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7670687577816592452" },
+  { type:"food", name:"Soba ya Gon", rec:"史哥", lat:26.289077, lng:127.753059,
+    note:"📍宜野灣｜沖繩麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於宜野灣的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=644175920881613937" },
+  { type:"food", name:"鳥と卵の専門店 鳥玉 大謝名店", rec:"史哥", lat:26.268478, lng:127.732365,
+    note:"📍浦添｜雞肉・親子丼",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的雞肉・親子丼。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=9943907167682960217" },
+  { type:"food", name:"鳥と卵の専門店 鳥玉 イーアス沖縄豊崎店", rec:"史哥", lat:26.157728, lng:127.650947,
+    note:"📍豐見城・系滿｜雞肉・親子丼",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於豐見城・系滿的雞肉・親子丼。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=5541809354288317346" },
+  { type:"food", name:"鳥と卵の専門店 鳥玉 泉崎店", rec:"史哥", lat:26.211157, lng:127.677545,
+    note:"📍那霸｜雞肉・親子丼｜距那霸飯店約0.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的雞肉・親子丼。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7541597675920875728" },
+  { type:"food", name:"豚我小谷(阿谷豬餐廳)", rec:"史哥", lat:26.56992, lng:128.034718,
+    note:"📍名護｜阿古豬料理｜距名護飯店約9km｜阿谷豬餐廳",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的阿古豬料理。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=16867709060652637565" },
+  { type:"food", name:"星野リゾート バンタカフェ", rec:"史哥", lat:26.41771, lng:127.714004,
+    note:"📍讀谷｜海景咖啡",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於讀谷的海景咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=1503196118230104183" },
+  { type:"food", name:"康龍拉麵 國際通店", rec:"史哥", lat:26.215564, lng:127.684851,
+    note:"📍那霸｜拉麵｜距那霸飯店約0.7km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=12550321812828674436" },
+  { type:"food", name:"Gorkarna", rec:"史哥", lat:26.210665, lng:127.684153,
+    note:"📍那霸｜咖哩｜距那霸飯店約0.7km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的咖哩。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11840718105102761721" },
+  { type:"food", name:"Yukino", rec:"史哥", lat:26.593849, lng:127.965034,
+    note:"📍名護｜餐廳｜距名護飯店約6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的餐廳。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11516674893673517227" },
+  { type:"food", name:"目利きの銀次 新都心本舗", rec:"史哥", lat:26.230123, lng:127.692886,
+    note:"📍那霸｜居酒屋｜距那霸飯店約2.4km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的居酒屋。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=117399925356479660" },
+  { type:"food", name:"Pizza Kissa Mimoza-no-ki", rec:"史哥", lat:26.171842, lng:127.765746,
+    note:"📍南風原・那霸東｜披薩・咖啡",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於南風原・那霸東的披薩・咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=8122489425123683899" },
+  { type:"food", name:"JEF 漢堡(南風原)", rec:"史哥", lat:26.199563, lng:127.747492,
+    note:"📍南風原・那霸東｜苦瓜漢堡・速食",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於南風原・那霸東的苦瓜漢堡・速食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=15139919875495693845" },
+  { type:"food", name:"BALL DONUT PARK", rec:"史哥", lat:26.215682, lng:127.68466,
+    note:"📍那霸｜甜甜圈｜距那霸飯店約0.7km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的甜甜圈。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=4230663235710384127" },
+  { type:"food", name:"ヤマナカリー 別邸", rec:"史哥", lat:26.217439, lng:127.696469,
+    note:"📍那霸｜咖哩｜距那霸飯店約1.9km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的咖哩。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=5571756362688950425" },
+  { type:"food", name:"Mazemen Mahoroba", rec:"史哥", lat:26.21764, lng:127.687215,
+    note:"📍那霸｜拌麵｜距那霸飯店約1.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拌麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=15842650906256148724" },
+  { type:"food", name:"Coronet and Sandwich Pippi", rec:"史哥", lat:26.262154, lng:127.758176,
+    note:"📍西原・宜野灣｜三明治・麵包",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於西原・宜野灣的三明治・麵包。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=14320393956876717547" },
+  { type:"food", name:"JEF ジェフ豊見城店", rec:"史哥", lat:26.181365, lng:127.662201,
+    note:"📍豐見城｜苦瓜漢堡・速食",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於豐見城的苦瓜漢堡・速食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=4231838477859191571" },
+  { type:"food", name:"ジェフ サンライズ那覇店", rec:"史哥", lat:26.212807, lng:127.689284,
+    note:"📍那霸｜苦瓜漢堡・速食｜距那霸飯店約1.1km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的苦瓜漢堡・速食。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=2874385282087601367" },
+  { type:"food", name:"自家製麺 三竹寿 アクロスプラザ古島駅前店", rec:"史哥", lat:26.230057, lng:127.701931,
+    note:"📍那霸｜沾麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的沾麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=13347425414611205381" },
+  { type:"food", name:"十割そば 山楽", rec:"史哥", lat:26.214107, lng:127.690517,
+    note:"📍那霸｜蕎麥麵｜距那霸飯店約1.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的蕎麥麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=17868286291394429406" },
+  { type:"food", name:"丸源ラーメン 沖縄美里店", rec:"史哥", lat:26.348518, lng:127.82495,
+    note:"📍沖繩市｜拉麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於沖繩市的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=14690587224363550021" },
+  { type:"food", name:"麗山海景皇宮渡假酒店谷茶灣", rec:"史哥", lat:26.46313, lng:127.816875,
+    note:"📍恩納｜飯店餐廳",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於恩納的飯店餐廳。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=13622613799682225458" },
+  { type:"food", name:"PANCHORI-NA 麵包店", rec:"史哥", lat:26.594312, lng:127.989162,
+    note:"📍名護｜麵包｜距名護飯店約7km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的麵包。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=4340482639256347970" },
+  { type:"food", name:"Kijimuna 塔可飯 瀨長島店", rec:"史哥", lat:26.176583, lng:127.640487,
+    note:"📍豐見城｜塔可飯",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於豐見城的塔可飯。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=10619391428329580595" },
+  { type:"food", name:"乃が美 はなれ 沖縄おもろまち店", rec:"史哥", lat:26.224498, lng:127.698185,
+    note:"📍那霸｜生吐司｜距那霸飯店約2.4km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的生吐司。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=6763230173160857358" },
+  { type:"food", name:"海鮮食堂 太陽", rec:"史哥", lat:26.270881, lng:127.723009,
+    note:"📍浦添｜海鮮食堂",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的海鮮食堂。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=12147661565500262440" },
+  { type:"food", name:"宗像堂", rec:"史哥", lat:26.26031, lng:127.737386,
+    note:"📍浦添｜麵包",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的麵包。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=13480634489299689653" },
+  { type:"food", name:"プーゾチーズケーキセラー 那覇泊店", rec:"史哥", lat:26.223475, lng:127.688757,
+    note:"📍那霸｜起司蛋糕｜距那霸飯店約1.6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的起司蛋糕。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=5617377460147821652" },
+  { type:"food", name:"Puzo プーゾチーズケーキセラー イオンモール沖縄ライカム店", rec:"史哥", lat:26.314898, lng:127.795007,
+    note:"📍北中城(來客夢)｜起司蛋糕",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北中城(來客夢)的起司蛋糕。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=1018012986837050308" },
+  { type:"food", name:"Fukugiya", rec:"史哥", lat:26.215006, lng:127.683999,
+    note:"📍那霸｜年輪蛋糕｜距那霸飯店約0.6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的年輪蛋糕。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3307788921611513278" },
+  { type:"food", name:"イッペコッペ", rec:"史哥", lat:26.26257, lng:127.715695,
+    note:"📍浦添｜麵包",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的麵包。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3842929981832476163" },
+  { type:"food", name:"追風丸拉麵", rec:"史哥", lat:26.21567, lng:127.6824,
+    note:"📍那霸｜拉麵｜距那霸飯店約0.5km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=14204997315280599070" },
+  { type:"food", name:"Marutama味噌飯屋", rec:"史哥", lat:26.210554, lng:127.679864,
+    note:"📍那霸｜味噌料理｜距那霸飯店約0.3km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的味噌料理。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=15351523510561554647" },
+  { type:"food", name:"Antoshimo炸麵包", rec:"史哥", lat:26.222534, lng:127.68565,
+    note:"📍那霸｜炸麵包｜距那霸飯店約1.3km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的炸麵包。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=5769893065708218623" },
+  { type:"food", name:"Charlie's Tacos 沖繩市(胡屋)店", rec:"史哥", lat:26.340122, lng:127.799316,
+    note:"📍沖繩市｜塔可",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於沖繩市的塔可。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=2733340075128825151" },
+  { type:"food", name:"Charlie's Tacos 國際通店", rec:"史哥", lat:26.214079, lng:127.682361,
+    note:"📍那霸｜塔可｜距那霸飯店約0.4km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的塔可。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=9337898743621967919" },
+  { type:"food", name:"Ajitoya Curry Restaurant", rec:"史哥", lat:26.215596, lng:127.72022,
+    note:"📍那霸｜咖哩",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的咖哩。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=17059371808190727897" },
+  { type:"food", name:"元祖海葡萄 丼飯", rec:"史哥", lat:26.504148, lng:127.850547,
+    note:"📍恩納｜海葡萄丼｜距名護飯店約11km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於恩納的海葡萄丼。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=5069284235553673148" },
+  { type:"food", name:"Sobe Soba", rec:"史哥", lat:26.20406, lng:127.684688,
+    note:"📍那霸｜沖繩麵｜距那霸飯店約1.2km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=4784105415023620533" },
+  { type:"food", name:"Yakiniku Honpo Shimagyu", rec:"史哥", lat:26.220342, lng:127.682275,
+    note:"📍那霸｜燒肉｜距那霸飯店約0.9km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11146325673905861583" },
+  { type:"food", name:"Ryukyu Sabo Ashibiuna 琉球茶房", rec:"史哥", lat:26.21957, lng:127.719635,
+    note:"📍那霸｜琉球料理",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的琉球料理。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=6044145258998886912" },
+  { type:"food", name:"敘敘苑燒肉 沖繩新都心店", rec:"史哥", lat:26.224659, lng:127.698184,
+    note:"📍那霸｜燒肉｜距那霸飯店約2.4km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=15945024123893961418" },
+  { type:"food", name:"登龍門拉麵", rec:"史哥", lat:26.217376, lng:127.681709,
+    note:"📍那霸｜拉麵｜距那霸飯店約0.6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=10660638953832983869" },
+  { type:"food", name:"豬肉蛋飯糰-本店", rec:"史哥", lat:26.215184, lng:127.687971,
+    note:"📍那霸｜豬肉蛋飯糰｜距那霸飯店約1.0km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的豬肉蛋飯糰。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7576803173627225668" },
+  { type:"food", name:"oHacorte 港川店", rec:"史哥", lat:26.262507, lng:127.7154,
+    note:"📍浦添｜麵包・水果塔",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於浦添的麵包・水果塔。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=6452321081751861592" },
+  { type:"food", name:"琉球新麵 通堂 本店", rec:"史哥", lat:26.197933, lng:127.666276,
+    note:"📍那霸｜拉麵｜距那霸飯店約2.1km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於那霸的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=15757916158495058018" },
+  { type:"food", name:"名護炸雞", rec:"史哥", lat:26.607865, lng:127.97033,
+    note:"📍名護｜炸雞｜距名護飯店約8km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的炸雞。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=11038656646641300671" },
+  { type:"food", name:"Kijimuna 塔可飯 美國村店", rec:"史哥", lat:26.315922, lng:127.754641,
+    note:"📍北谷・美國村｜塔可飯",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的塔可飯。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=17445425353886944371" },
+  { type:"food", name:"山原蕎麥麵", rec:"史哥", lat:26.650532, lng:127.949474,
+    note:"📍今歸仁・本部｜沖繩麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於今歸仁・本部的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3698955081592171569" },
+  { type:"food", name:"Onigiri Breakfast", rec:"史哥", lat:26.315792, lng:127.753715,
+    note:"📍北谷・美國村｜飯糰早餐",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的飯糰早餐。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=8063819332210199078" },
+  { type:"food", name:"Cafe Curcuma", rec:"史哥", lat:26.162122, lng:127.812378,
+    note:"📍南城｜海景咖啡・泰式",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於南城的海景咖啡・泰式。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7347924815690913390" },
+  { type:"food", name:"幸福鬆餅", rec:"史哥", lat:26.176515, lng:127.640567,
+    note:"📍豐見城｜鬆餅",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於豐見城的鬆餅。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=13039270336270825903" },
+  { type:"food", name:"暖暮拉麵 名護店", rec:"史哥", lat:26.582326, lng:127.984726,
+    note:"📍名護｜拉麵｜距名護飯店約6km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的拉麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=1480292691517938920" },
+  { type:"food", name:"369farm cafe", rec:"史哥", lat:26.605263, lng:127.97327,
+    note:"📍名護｜咖啡｜距名護飯店約8km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=3377623049057044178" },
+  { type:"food", name:"浜屋沖繩麵", rec:"史哥", lat:26.329287, lng:127.744332,
+    note:"📍北谷・美國村｜沖繩麵",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於北谷・美國村的沖繩麵。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=12045287017928494962" },
+  { type:"food", name:"焼肉五苑名護店", rec:"史哥", lat:26.608333, lng:127.970253,
+    note:"📍名護｜燒肉｜距名護飯店約8km",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於名護的燒肉。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=16630156401798720585" },
+  { type:"food", name:"Fuu Cafe", rec:"史哥", lat:26.645254, lng:127.859096,
+    note:"📍本部｜咖啡",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於本部的咖啡。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=17018533559115753140" },
+  { type:"food", name:"蝦餐車", rec:"史哥", lat:26.696829, lng:128.019778,
+    note:"📍古宇利島｜蒜味蝦餐車",
+    desc:"史哥 Google 地圖「喜愛的地點」清單收藏，位於古宇利島的蒜味蝦餐車。營業時間、公休與是否需要訂位，出發前請點 Google 地圖連結確認。",
+    gmap:"https://www.google.com/maps?cid=7502359564575922405" },
+
   /* 新增地點：照上面格式加一筆即可 */
 ];
 
@@ -1341,6 +1738,7 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 map.on("click", () => map.scrollWheelZoom.enable());
 
 const layers = {};              // 每個類別一個圖層群組
+const markers = [];             // { p, m }，給「史哥」篩選用
 const counts = {};
 const bounds = [];
 
@@ -1355,36 +1753,56 @@ PLACES.forEach(p => {
     .bindPopup(`<b>${p.name}</b>${p.rec ? `<span class="poprec">👤 ${p.rec} 也推薦</span><br>` : ""}${p.note ? p.note.replace(/｜/g, "<br>") + "<br>" : ""}
       <a href="#" class="popup-more" data-name="${p.name.replace(/"/g, "&quot;")}">📖 詳細說明與介紹 →</a>`);
   (layers[p.type] = layers[p.type] || L.layerGroup().addTo(map)).addLayer(m);
+  markers.push({ p, m });
   counts[p.type] = (counts[p.type] || 0) + 1;
   bounds.push([p.lat, p.lng]);
 });
 
-/* 圖例＝可點擊的圖層開關 */
+/* 圖例＝可點擊的圖層開關；「史哥」為額外篩選：開啟時只顯示史哥推薦的點 */
 const legend = document.getElementById("legend");
+const typeOn = {};
+let stanOnly = false;
+function applyFilter(){
+  Object.keys(layers).forEach(t => {
+    const g = layers[t];
+    if (typeOn[t]) { if (!map.hasLayer(g)) map.addLayer(g); } else map.removeLayer(g);
+  });
+  markers.forEach(({ p, m }) => {
+    const g = layers[p.type];
+    const want = !stanOnly || p.rec === "史哥";
+    if (want && !g.hasLayer(m)) g.addLayer(m);
+    if (!want && g.hasLayer(m)) g.removeLayer(m);
+  });
+  legend.querySelectorAll("button[data-type]").forEach(b => b.classList.toggle("on", !!typeOn[b.dataset.type]));
+  stanBtn.classList.toggle("on", stanOnly);
+}
 Object.keys(STYLE).forEach(type => {
   if (!counts[type]) return;
+  typeOn[type] = true;
   const s = STYLE[type];
   const b = document.createElement("button");
   b.className = "lg on";
   b.type = "button";
+  b.dataset.type = type;
   b.innerHTML = `<i class="dot" style="background:${s.c}"></i>${s.label}<em>${counts[type]}</em>`;
-  b.addEventListener("click", () => {
-    const on = b.classList.toggle("on");
-    if (on) map.addLayer(layers[type]); else map.removeLayer(layers[type]);
-  });
+  b.addEventListener("click", () => { typeOn[type] = !typeOn[type]; applyFilter(); });
   legend.appendChild(b);
 });
+/* 史哥推薦 */
+const stanBtn = document.createElement("button");
+stanBtn.className = "lg stan"; stanBtn.type = "button";
+stanBtn.innerHTML = `<i class="dot" style="background:linear-gradient(120deg,#ff7a5c,#ff9f7c)"></i>👤 史哥<em>${PLACES.filter(p => p.rec === "史哥").length}</em>`;
+stanBtn.title = "只看史哥推薦的地點";
+stanBtn.addEventListener("click", () => { stanOnly = !stanOnly; applyFilter(); });
+legend.appendChild(stanBtn);
 /* 全部開／關 */
 const all = document.createElement("button");
 all.className = "lg alltoggle"; all.type = "button"; all.textContent = "只看景點";
 all.addEventListener("click", () => {
   const spotOnly = all.textContent === "只看景點";
-  [...legend.querySelectorAll("button.lg:not(.alltoggle)")].forEach((b, i) => {
-    const type = Object.keys(STYLE).filter(t => counts[t])[i];
-    const want = spotOnly ? type === "spot" : true;
-    b.classList.toggle("on", want);
-    if (want) map.addLayer(layers[type]); else map.removeLayer(layers[type]);
-  });
+  Object.keys(typeOn).forEach(t => typeOn[t] = spotOnly ? t === "spot" : true);
+  if (!spotOnly) stanOnly = false;
+  applyFilter();
   all.textContent = spotOnly ? "全部顯示" : "只看景點";
 });
 legend.appendChild(all);
@@ -1492,7 +1910,7 @@ function openPlace(p){
   const qJP   = encodeURIComponent(p.name + " 沖縄");
   const L = [];
   if (p.site) L.push({ e:"🌐", t:"官方網站", u:p.site, primary:true });
-  L.push({ e:"📍", t:"Google 地圖", u:`https://www.google.com/maps/search/?api=1&query=${qJP}`, primary:!p.site });
+  L.push({ e:"📍", t:"Google 地圖", u:p.gmap || `https://www.google.com/maps/search/?api=1&query=${qJP}`, primary:!p.site });
   L.push({ e:"🔍", t:"中文遊記心得", u:`https://www.google.com/search?q=${qName}+沖繩+心得` });
   L.push({ e:"📝", t:"部落格介紹",   u:`https://www.google.com/search?q=${qName}+沖繩+推薦+部落格` });
   L.push({ e:"▶️", t:"YouTube 影片", u:`https://www.youtube.com/results?search_query=${qJP}` });
