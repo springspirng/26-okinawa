@@ -174,6 +174,9 @@ h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
 .lg em{font-style:normal;font-size:.72rem;font-weight:700;background:var(--sand-d);color:var(--ocean-d);padding:1px 7px;border-radius:999px;margin-left:2px}
 .lg.on em{background:rgba(20,184,189,.18)}
 .lg.alltoggle{opacity:1;border-style:dashed;color:var(--ink-soft)}
+.legend-presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.lp-label{font-size:.76rem;font-weight:700;letter-spacing:.1em;color:var(--ink-soft);margin-right:2px}
+.lg.alltoggle.cur{border-style:solid;border-color:var(--ocean);background:var(--ocean);color:#fff}
 .lg.stan.on{opacity:1;border-color:#ff7a5c;background:linear-gradient(120deg,rgba(255,122,92,.12),rgba(255,159,124,.06))}
 .lg.stan.on em{background:rgba(255,122,92,.2);color:#c2452a}
 .dot{width:11px;height:11px;border-radius:50%;flex:none}
@@ -1783,6 +1786,7 @@ function applyFilter(){
   });
   legend.querySelectorAll("button[data-type]").forEach(b => b.classList.toggle("on", !!typeOn[b.dataset.type]));
   stanBtn.classList.toggle("on", stanOn);
+  if (typeof markPreset === "function") markPreset();
 }
 Object.keys(STYLE).forEach(type => {
   if (!counts[type]) return;
@@ -1803,17 +1807,37 @@ stanBtn.innerHTML = `<i class="dot" style="background:linear-gradient(120deg,#ff
 stanBtn.title = "顯示／隱藏史哥推薦的地點";
 stanBtn.addEventListener("click", () => { stanOn = !stanOn; applyFilter(); });
 legend.appendChild(stanBtn);
-/* 全部開／關 */
-const all = document.createElement("button");
-all.className = "lg alltoggle"; all.type = "button"; all.textContent = "只看景點";
-all.addEventListener("click", () => {
-  const spotOnly = all.textContent === "只看景點";
-  Object.keys(typeOn).forEach(t => typeOn[t] = spotOnly ? t === "spot" : true);
-  stanOn = !spotOnly;
-  applyFilter();
-  all.textContent = spotOnly ? "全部顯示" : "只看景點";
+/* 快捷檢視：只看景點／只看美食／只看史哥／全部顯示 */
+const PRESETS = [
+  { k:"spot", t:"只看景點", types:["spot"], stan:false },
+  { k:"food", t:"只看美食", types:["food"], stan:false },
+  { k:"stan", t:"只看史哥", types:[],       stan:true  },
+  { k:"all",  t:"全部顯示", types:null,     stan:true  }
+];
+const presetBox = document.createElement("div");
+presetBox.className = "legend-presets";
+presetBox.innerHTML = `<span class="lp-label">快速檢視</span>`;
+legend.after(presetBox);
+const presetBtns = PRESETS.map(pr => {
+  const b = document.createElement("button");
+  b.className = "lg alltoggle"; b.type = "button"; b.textContent = pr.t;
+  b.addEventListener("click", () => {
+    Object.keys(typeOn).forEach(t => typeOn[t] = pr.types ? pr.types.includes(t) : true);
+    stanOn = pr.stan;
+    applyFilter();
+  });
+  b._pr = pr;
+  presetBox.appendChild(b);
+  return b;
 });
-legend.appendChild(all);
+function markPreset(){
+  presetBtns.forEach(b => {
+    const pr = b._pr;
+    const match = Object.keys(typeOn).every(t => typeOn[t] === (pr.types ? pr.types.includes(t) : true)) && stanOn === pr.stan;
+    b.classList.toggle("cur", match);
+  });
+}
+markPreset();
 
 /* 地圖彈窗內的「詳細說明」開啟 modal */
 map.on("popupopen", e => {
