@@ -153,6 +153,20 @@ h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
 .hotel dl{margin:16px 0 0;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:.88rem;position:relative}
 .hotel dt{color:var(--ink-soft);font-weight:600;white-space:nowrap}
 .hotel dd{margin:0;overflow-wrap:anywhere}
+.addr-box{position:relative;margin-top:16px;background:#f7fbfb;border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px}
+.addr-title{font-size:.8rem;font-weight:700;color:var(--ocean);letter-spacing:.04em;margin-bottom:6px}
+.addr-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:9px 0;border-top:1px dashed var(--line)}
+.addr-title + .addr-row{border-top:none}
+.addr-lang{font-size:.78rem;font-weight:700;color:var(--ink);white-space:nowrap;line-height:1.3}
+.addr-lang small{display:block;font-family:"Outfit",sans-serif;font-weight:500;font-size:.68rem;color:var(--ink-soft)}
+.addr-txt{font-size:.86rem;line-height:1.55;overflow-wrap:anywhere;user-select:all;-webkit-user-select:all}
+.addr-txt span{display:block}
+.addr-txt span:first-child{font-weight:700}
+.copy-btn{font-family:inherit;font-size:.76rem;font-weight:700;padding:6px 12px;min-height:34px;border-radius:10px;border:1.5px solid var(--ocean);
+  background:#fff;color:var(--ocean);cursor:pointer;white-space:nowrap;transition:.18s}
+.copy-btn:hover{background:rgba(20,184,189,.1)}
+.copy-btn.done{background:var(--ocean);color:#fff}
+.addr-hint{margin:6px 0 0;font-size:.76rem;color:var(--ink-soft);line-height:1.5}
 .btn{
   display:inline-flex;align-items:center;gap:7px;margin-top:18px;text-decoration:none;
   background:var(--ocean);color:#fff;padding:9px 18px;border-radius:12px;font-size:.85rem;font-weight:600;
@@ -526,7 +540,26 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
         <dt>區域</dt><dd>名護市 · 西海岸（國道 58 號旁）</dd>
         <dt>交通</dt><dd>距那霸機場約 60 分鐘車程</dd>
         <dt>特色</dt><dd>全客房面海、房間附私人陽台</dd>
+        <dt>電話</dt><dd>0980-54-8155</dd>
       </dl>
+      <div class="addr-box">
+        <div class="addr-title">📝 入境卡／Visit Japan Web 用地址</div>
+        <div class="addr-row">
+          <span class="addr-lang">日文<small>日本語</small></span>
+          <div class="addr-txt"><span>ベストウェスタン沖縄幸喜ビーチ</span><span>〒905-0025 沖縄県名護市幸喜117</span><span>TEL 0980-54-8155</span></div>
+          <button type="button" class="copy-btn" data-copy="ベストウェスタン沖縄幸喜ビーチ
+〒905-0025 沖縄県名護市幸喜117
+TEL 0980-54-8155">複製</button>
+        </div>
+        <div class="addr-row">
+          <span class="addr-lang">英文<small>English</small></span>
+          <div class="addr-txt"><span>Best Western Okinawa Kouki Beach</span><span>117 Koki, Nago-shi, Okinawa 905-0025, Japan</span><span>TEL +81-980-54-8155</span></div>
+          <button type="button" class="copy-btn" data-copy="Best Western Okinawa Kouki Beach
+117 Koki, Nago-shi, Okinawa 905-0025, Japan
+TEL +81-980-54-8155">複製</button>
+        </div>
+        <p class="addr-hint">⭐ 入境卡／Visit Japan Web 的「滯在先（在日聯絡處）」填第一晚這間</p>
+      </div>
       <a class="btn" target="_blank" rel="noopener"
          href="https://www.google.com/maps/search/?api=1&query=Best+Western+Okinawa+Kouki+Beach+%E6%B2%96%E7%B8%84%E7%9C%8C%E5%90%8D%E8%AD%B7%E5%B8%82%E5%B9%B8%E5%96%9C117">📍 Google 地圖</a>
     </div>
@@ -541,6 +574,24 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
         <dt>交通</dt><dd>單軌電車「県庁前」站步行約 3 分鐘</dd>
         <dt>電話</dt><dd>098-866-3811</dd>
       </dl>
+      <div class="addr-box">
+        <div class="addr-title">📝 入境卡／Visit Japan Web 用地址</div>
+        <div class="addr-row">
+          <span class="addr-lang">日文<small>日本語</small></span>
+          <div class="addr-txt"><span>アルモントホテル那覇県庁前</span><span>〒900-0015 沖縄県那覇市久茂地1-3-5</span><span>TEL 098-866-3811</span></div>
+          <button type="button" class="copy-btn" data-copy="アルモントホテル那覇県庁前
+〒900-0015 沖縄県那覇市久茂地1-3-5
+TEL 098-866-3811">複製</button>
+        </div>
+        <div class="addr-row">
+          <span class="addr-lang">英文<small>English</small></span>
+          <div class="addr-txt"><span>Almont Hotel Naha-Kenchomae</span><span>1-3-5 Kumoji, Naha-shi, Okinawa 900-0015, Japan</span><span>TEL +81-98-866-3811</span></div>
+          <button type="button" class="copy-btn" data-copy="Almont Hotel Naha-Kenchomae
+1-3-5 Kumoji, Naha-shi, Okinawa 900-0015, Japan
+TEL +81-98-866-3811">複製</button>
+        </div>
+        <p class="addr-hint">入境時只需填第一晚的飯店；這裡備用（換飯店、叫計程車時可出示）</p>
+      </div>
       <a class="btn" target="_blank" rel="noopener"
          href="https://www.google.com/maps/search/?api=1&query=%E3%82%A2%E3%83%AB%E3%83%A2%E3%83%B3%E3%83%88%E3%83%9B%E3%83%86%E3%83%AB%E9%82%A3%E8%A6%87%E7%9C%8C%E5%BA%81%E5%89%8D+%E6%B2%96%E7%B8%84%E7%9C%8C%E9%82%A3%E8%A6%87%E5%B8%82%E4%B9%85%E8%8C%82%E5%9C%B01-3-5">📍 Google 地圖</a>
       <a class="btn ghost" target="_blank" rel="noopener" href="https://www.almont.jp/naha/access.html">官網交通</a>
@@ -1899,6 +1950,18 @@ function showDay(i){
   });
   showDay(idx);
 })();
+
+/* ---------- 飯店地址一鍵複製 ---------- */
+document.querySelectorAll(".copy-btn").forEach(b => b.addEventListener("click", async () => {
+  const t = b.dataset.copy;
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) {
+    const ta = document.createElement("textarea"); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+  }
+  b.textContent = "已複製 ✓"; b.classList.add("done");
+  setTimeout(() => { b.textContent = "複製"; b.classList.remove("done"); }, 1600);
+}));
 
 /* ---------- 詳細彈窗 ---------- */
 const modalBg = document.getElementById("modalBg");
