@@ -438,6 +438,7 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
       <a href="#info">基本資料</a>
       <a href="#flight">航班</a>
       <a href="#hotel">住宿</a>
+      <a href="#car">租車</a>
       <a href="#plan">行程</a>
       <a href="#map-sec">地圖</a>
       <a href="#spots">景點</a>
@@ -599,6 +600,68 @@ TEL +81-98-866-3811">複製</button>
 
   </div>
 </section>
+
+<!-- ============ 租車 ============ -->
+<section id="car">
+  <div class="sec-head">
+    <div class="ic">🚗</div>
+    <div><h2>租車資訊</h2></div>
+    <p>OTS 租車 · 11/07–11/12 共 5 天</p>
+  </div>
+  <div class="grid g2">
+
+    <div class="hotel">
+      <span class="nights">11/07 12:30 取車 → 11/12 18:00 還車</span>
+      <h3>OTS 租車 · WS 級</h3>
+      <div class="en">OTS Rent a car · 早鳥優惠 90 方案</div>
+      <dl>
+        <dt>預訂號碼</dt><dd><b>OTS1475458</b></dd>
+        <dt>取車</dt><dd>2026-11-07（六）12:30</dd>
+        <dt>還車</dt><dd>2026-11-12（四）18:00</dd>
+        <dt>營業所</dt><dd>臨空豐崎營業所（那霸機場）<br>取車、還車同一處</dd>
+        <dt>人數</dt><dd>成人・兒童 4 人</dd>
+        <dt>接送</dt><dd>機場⇄營業所免費接駁，車程約 20 分鐘<br>已登記去程 MM922／回程 MM929</dd>
+      </dl>
+      <div class="addr-box">
+        <div class="addr-title">📍 營業所地址（導航用）</div>
+        <div class="addr-row">
+          <span class="addr-lang">日文<small>日本語</small></span>
+          <div class="addr-txt"><span>OTSレンタカー 臨空豊崎営業所</span><span>沖縄県豊見城市豊崎3-37</span><span>TEL 098-856-8877</span></div>
+          <button type="button" class="copy-btn" data-copy="OTSレンタカー 臨空豊崎営業所
+沖縄県豊見城市豊崎3-37
+TEL 098-856-8877">複製</button>
+        </div>
+        <p class="addr-hint">營業時間 08:00–19:00。車上導航可直接輸入電話 098-856-8877 設定目的地。</p>
+      </div>
+      <a class="btn" target="_blank" rel="noopener"
+         href="https://www.google.com/maps/search/?api=1&query=OTS%E3%83%AC%E3%83%B3%E3%82%BF%E3%82%AB%E3%83%BC+%E8%87%A8%E7%A9%BA%E8%B1%8A%E5%B4%8E%E5%96%B6%E6%A5%AD%E6%89%80">📍 Google 地圖</a>
+      <a class="btn ghost" target="_blank" rel="noopener" href="https://www.otsinternational.jp/otsrentacar/okinawa/office/toyosaki/">營業所官網</a>
+    </div>
+
+    <div class="hotel">
+      <span class="nights">費用・當地付款</span>
+      <h3>合計 ¥54,560</h3>
+      <div class="en">取車時於營業所支付</div>
+      <dl>
+        <dt>租車費用</dt><dd>¥37,400</dd>
+        <dt>免責補償</dt><dd>¥9,900</dd>
+        <dt>豪華安心險</dt><dd>¥7,260</dd>
+        <dt>時間外取／還</dt><dd>¥0</dd>
+      </dl>
+      <div class="addr-box">
+        <div class="addr-title">✅ 取車前待辦</div>
+        <p class="addr-hint" style="margin:0;color:var(--ink);font-size:.84rem;line-height:1.8">
+          ⚠️ <b>線上事前講解尚未完成</b>：出發前 2 天（約 11/05 起）可在 OTS 預約確認頁完成，能縮短取車手續時間。<br>
+          📱 事先準備好預約確認頁的 <b>QR code</b>，入境後出示給機場接機人員。<br>
+          🪪 駕駛人要帶：<b>護照＋台灣駕照正本＋駕照日文譯本</b>。<br>
+          ⛽ 還車前記得加滿油，並預留接駁回機場的時間。
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 
 <!-- ============ 每日行程 ============ -->
 <section id="plan">
@@ -1724,7 +1787,8 @@ const DAYS = [
       { t:"上午", s:"MORNING", items:[
         { emo:"✈️", name:"07:15 抵達桃園機場", note:"MM922 09:45 起飛", fixed:true }]},
       { t:"中午", s:"NOON", items:[
-        { emo:"🛬", name:"12:25 抵達那霸機場", note:"入境、領行李、取車或搭車北上", fixed:true }]},
+        { emo:"🛬", name:"12:25 抵達那霸機場", note:"入境、領行李", fixed:true },
+        { emo:"🚗", name:"12:30 OTS 取車", note:"臨空豐崎營業所，搭免費接駁車約 20 分，出示 QR code", fixed:true }]},
       { t:"下午", s:"AFTERNOON", items:[] },
       { t:"晚上", s:"EVENING", items:[] },
   ]},
@@ -1758,7 +1822,8 @@ const DAYS = [
       { t:"上午", s:"MORNING", items:[] },
       { t:"中午", s:"NOON", items:[] },
       { t:"下午", s:"AFTERNOON", items:[] },
-      { t:"晚上", s:"EVENING", items:[] },
+      { t:"晚上", s:"EVENING", items:[
+        { emo:"🚗", name:"18:00 OTS 還車", note:"臨空豐崎營業所，還車前加滿油；之後搭接駁到機場再轉單軌回飯店", fixed:true }]},
   ]},
   { d:"11/13", w:"五", stay:"那霸 Almont", slots:[
       { t:"上午", s:"MORNING", items:[] },
