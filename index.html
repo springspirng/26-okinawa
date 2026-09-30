@@ -200,6 +200,8 @@ h2{font-size:1.6rem;margin:0;font-weight:800;letter-spacing:-.01em}
 .leaflet-popup-content{font-family:"Noto Sans TC",sans-serif;margin:14px 16px;font-size:.88rem;line-height:1.6}
 .leaflet-popup-content b{font-size:.98rem;display:block;margin-bottom:3px}
 .leaflet-popup-content a{font-weight:600;text-decoration:none}
+.lg.dayon{opacity:1;color:#fff;border-style:solid}
+.dnum{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:2.5px solid #fff;color:#fff;font:800 13px "Outfit",sans-serif;box-shadow:0 3px 10px rgba(0,0,0,.3)}
 .poprec{display:inline-block;background:#ff7a5c;color:#fff;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-bottom:4px}
 
 /* ---------- CHECKLIST ---------- */
@@ -440,6 +442,7 @@ footer .ln{width:44px;height:3px;background:var(--ocean-l);border-radius:9px;mar
       <a href="#hotel">住宿</a>
       <a href="#car">租車</a>
       <a href="#plan">行程</a>
+      <a href="#ai">AI 規劃</a>
       <a href="#map-sec">地圖</a>
       <a href="#spots">景點</a>
       <a href="#food">美食</a>
@@ -674,6 +677,23 @@ TEL 098-856-8877">複製</button>
   <div id="days"></div>
 </section>
 
+<!-- ============ AI 規劃區 ============ -->
+<section id="ai">
+  <div class="sec-head">
+    <div class="ic">🤖</div>
+    <div><h2>AI 規劃區</h2></div>
+    <p>米哥建議版 · 兩種節奏任選，喜歡哪天再搬到上面「每日行程」</p>
+  </div>
+  <div class="pool-bar" id="aiTabs">
+    <button type="button" class="pchip" data-plan="loose">🌴 悠閒版（推薦）</button>
+    <button type="button" class="pchip" data-plan="full">🔥 滿滿版</button>
+  </div>
+  <p class="pool-hint" id="aiDesc"></p>
+  <div class="daynav" id="aiNav"></div>
+  <div id="aiDays"></div>
+  <p class="pool-hint" style="margin-top:12px">排法依據：避開公休（水族館週三部分開園、Orion 週日一休、満味週日一休、中本天婦羅週四休）、租車 11/12 18:00 在豐崎還車，所以 Costco 排在還車前一天，買完直接開回飯店卸貨。時間為估計值，出發前再確認營業時間。</p>
+</section>
+
 <!-- ============ 地圖 ============ -->
 <section id="map-sec">
   <div class="sec-head">
@@ -683,6 +703,7 @@ TEL 098-856-8877">複製</button>
   </div>
   <div class="map-wrap"><div id="map"></div><div class="map-hint" id="mapHint">用兩指移動地圖</div></div>
   <div class="legend" id="legend"></div>
+  <div class="legend-presets" id="dayMapBar"></div>
   <p class="pool-hint" style="margin-top:10px">點上面的標籤可以開關圖層，只想看史哥推薦的，把其他類別關掉、留下「👤 史哥」即可。圖釘為概略位置，導航請點彈窗裡的 Google 地圖連結。</p>
 </section>
 
@@ -1842,6 +1863,194 @@ const DAYS = [
   ]},
 ];
 
+/* =========================================================
+   AI 規劃區 — 兩套建議行程（不會影響上面的「已排入行程」標記）
+   ========================================================= */
+const S = (t,s,items) => ({ t, s, items });
+const FIX_D1 = [{ emo:"🛬", name:"12:25 抵達那霸・12:30 OTS 取車", note:"實際上路約 13:30", fixed:true }];
+const FIX_D8 = [{ emo:"✈️", name:"14:50 抵達那霸機場", note:"MM929 16:50 起飛；県庁前站搭單軌約 12 分", fixed:true }];
+const RETURN_CAR = { emo:"🚗", name:"18:00 OTS 還車（臨空豐崎）", note:"先加滿油，搭接駁到機場轉單軌回飯店", fixed:true };
+const AI_PLANS = {
+  full:{ desc:"🔥 滿滿版：有車的 6 天盡量跑遠，北部・中部・南部各一天，不走回頭路。適合體力好、想一次看夠的人。", days:[
+    { d:"11/07", w:"六", stay:"名護 Best Western", slots:[
+      S("中午","NOON",FIX_D1),
+      S("下午","AFTERNOON",[
+        { emo:"🍤", name:"道の駅 許田", note:"14:40 吃天婦羅，順便用現金買水族館折扣票（¥1850）" },
+        { emo:"🍺", name:"Orion Happy Park(啤酒工廠見學)", note:"15:30 場次，⚠️ 一定要先線上預約（週日一休，只剩今天）" }]),
+      S("晚上","EVENING",[
+        { emo:"🏨", name:"入住名護飯店", note:"17:00 前後" },
+        { emo:"🍱", name:"美ら花 別邸", note:"18:00 晚餐，飯店走路 1 分，先致電訂位" }])]},
+    { d:"11/08", w:"日", stay:"名護 Best Western", slots:[
+      S("上午","MORNING",[
+        { emo:"🐋", name:"沖繩美麗海水族館", note:"8:30 開館就進，避開週日人潮；看黑潮之海餵食、海豚秀" }]),
+      S("中午","NOON",[
+        { emo:"🍜", name:"きしもと食堂 本部本店", note:"11:45 前到，賣完就收" },
+        { emo:"🌳", name:"備瀨福木林道", note:"13:00 散步或租腳踏車" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🏯", name:"今歸仁城跡", note:"14:00 世界遺產" },
+        { emo:"🌉", name:"古宇利島・古宇利大橋", note:"15:30 過橋、心形岩（查退潮）、蝦餐車，等 17:40 夕陽" }]),
+      S("晚上","EVENING",[
+        { emo:"🏡", name:"百年古家 大家(うふやー)", note:"18:30 百年古民家晚餐，先訂位" }])]},
+    { d:"11/09", w:"一", stay:"那霸 Almont（換飯店）", slots:[
+      S("上午","MORNING",[
+        { emo:"🧳", name:"名護飯店退房", note:"9:30 出發，沿西海岸一路往南", fixed:true },
+        { emo:"🐘", name:"萬座毛", note:"10:00 象鼻岩" }]),
+      S("中午","NOON",[
+        { emo:"🍚", name:"元祖海葡萄 丼飯", note:"11:00 就在萬座毛旁" },
+        { emo:"🫙", name:"恩納ガラス工房", note:"12:15 看琉球玻璃吹製" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🗼", name:"殘波岬燈塔", note:"13:30 登塔（12–13 點不開放）" },
+        { emo:"🎡", name:"美國村", note:"15:30 逛街、摩天輪" },
+        { emo:"🌅", name:"北谷Sunset Beach", note:"17:40 看夕陽" }]),
+      S("晚上","EVENING",[
+        { emo:"🍜", name:"Hokkaido Ramen Hayatemaru", note:"美國村晚餐後開 40 分到那霸" },
+        { emo:"🏨", name:"入住 Almont 那霸県庁前", note:"約 20:00", fixed:true }])]},
+    { d:"11/10", w:"二", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"🏯", name:"首里城公園", note:"8:30 趁人少（正殿內部 11/23 才開）" },
+        { emo:"🪨", name:"金城町石疊道", note:"10:30 下坡走" }]),
+      S("中午","NOON",[
+        { emo:"🍶", name:"瑞泉酒造", note:"11:30 免費見學試飲（司機別喝）" },
+        { emo:"🍲", name:"Ryukyu Sabo Ashibiuna 琉球茶房", note:"12:15 首里午餐" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🏰", name:"勝連城跡", note:"14:00 360 度海景" },
+        { emo:"🌊", name:"海中道路・海の駅あやはし館", note:"15:30 跨海兜風" }]),
+      S("晚上","EVENING",[
+        { emo:"🛍", name:"永旺夢樂城沖繩來客夢 AEON Rycom", note:"17:00 逛街＋晚餐，約 20:30 回那霸" }])]},
+    { d:"11/11", w:"三", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"🪨", name:"齋場御嶽", note:"9:15 世界遺產聖地（售票在物產館）" },
+        { emo:"🌿", name:"知念岬公園", note:"10:20 車程 5 分" },
+        { emo:"🌉", name:"ニライカナイ橋", note:"10:50 展望台拍照" }]),
+      S("中午","NOON",[
+        { emo:"☕", name:"Cafe Curcuma", note:"11:30 海景午餐" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🦇", name:"沖繩世界・玉泉洞", note:"13:00–15:30 鐘乳洞＋エイサー表演" },
+        { emo:"🛒", name:"Costco 沖繩南城倉庫店", note:"15:45–17:15 採買，⚠️ 帶會員卡；東西放後車廂" },
+        { emo:"🚗", name:"直接開回飯店卸貨 約 40–50 分（抓寬）", note:"冷藏品先放房間冰箱" }]),
+      S("晚上","EVENING",[
+        { emo:"🥩", name:"ステーキハウス88 國際通り店", note:"19:30 走路去，牛排晚餐" }])]},
+    { d:"11/12", w:"四", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"🕳", name:"舊海軍司令部壕", note:"9:00 戰時地下坑道" },
+        { emo:"⛩", name:"普天滿宮", note:"10:50 場洞穴參拜（現場登記）" }]),
+      S("中午","NOON",[
+        { emo:"🍜", name:"Soba ya Gon", note:"12:00 宜野灣沖繩麵" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🛍", name:"San-A 浦添西海岸 PARCO CITY", note:"13:30–16:45 逛街" },
+        { emo:"🚗", name:"開往豐崎 約 40–50 分（抓寬）＋加油", note:"16:45 出發" }]),
+      S("晚上","EVENING",[ RETURN_CAR,
+        { emo:"🏮", name:"榮町市場居酒屋群", note:"19:30 單軌到安里站" }])]},
+    { d:"11/13", w:"五", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"⛩", name:"波上宮", note:"9:30 搭計程車（單軌到不了）" }]),
+      S("中午","NOON",[
+        { emo:"🐟", name:"第一牧志公設市場", note:"11:30 1F 買海鮮，2F 代客料理" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🏺", name:"壺屋やちむん通り", note:"13:30 陶器街" },
+        { emo:"🛍", name:"國際通", note:"15:30 伴手禮、藥妝（唐吉訶德湊免稅）" }]),
+      S("晚上","EVENING",[
+        { emo:"💎", name:"T Galleria by DFS", note:"18:00 免稅精品（帶機票），週五開到 22:00" },
+        { emo:"🧺", name:"整理行李", note:"免稅品放隨身行李", fixed:true }])]},
+    { d:"11/14", w:"六", stay:"—（回台）", slots:[
+      S("上午","MORNING",[
+        { emo:"🍳", name:"旅の終わりの朝ごはん 美栄橋本店", note:"名字就是「旅程最後的早餐」" },
+        { emo:"🧳", name:"飯店退房", note:"寄放行李，國際通最後補貨", fixed:true }]),
+      S("中午","NOON",[
+        { emo:"🍔", name:"A&W 國際通松尾店", note:"12:30 最後一餐" }]),
+      S("下午","AFTERNOON",FIX_D8)]}
+  ]},
+  loose:{ desc:"🌴 悠閒版（推薦）：每天 2–3 個重點，早上睡飽、下午留空。🚗 車程都已抓寬約 1.3–1.5 倍（含找停車、塞車），寧可早到不趕路。", days:[
+    { d:"11/07", w:"六", stay:"名護 Best Western（離機場最遠的一晚）", slots:[
+      S("中午","NOON",[
+        { emo:"🛬", name:"12:25 抵達那霸・入境領行李", note:"抓到 13:10", fixed:true },
+        { emo:"🚗", name:"OTS 接駁＋取車手續", note:"接駁 20 分＋手續，約 14:00 才上路", fixed:true },
+        { emo:"🍙", name:"午餐：便利商店簡單吃", note:"上車前買好在車上吃，別讓抵達日卡在排隊" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🚗", name:"開車往名護 約 90–100 分（抓寬）", note:"走沖繩自動車道，Google 顯示約 70 分；第一天路不熟，中途休息站可停" },
+        { emo:"🍤", name:"道の駅 許田", note:"約 15:40 到，就在飯店前 5 分；若還有營業，用現金買水族館折扣票" },
+        { emo:"🏨", name:"入住名護飯店", note:"約 16:30，陽台看海放空" }]),
+      S("晚上","EVENING",[
+        { emo:"🍱", name:"美ら花 別邸", note:"18:00，飯店走路 1 分，先致電訂位" }])]},
+    { d:"11/08", w:"日", stay:"名護 Best Western", slots:[
+      S("上午","MORNING",[
+        { emo:"🚗", name:"開車往水族館 約 60–70 分（抓寬）", note:"8:30 出發，週日停車場會滿，早到比較好停" },
+        { emo:"🐋", name:"沖繩美麗海水族館", note:"9:40 入館慢慢看，順便走到翡翠海灘" }]),
+      S("中午","NOON",[
+        { emo:"🍜", name:"きしもと食堂 本部本店", note:"車程 15 分；賣完或排太久的備案：山原蕎麥麵" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🌳", name:"備瀨福木林道", note:"車程 15 分，散步 1 小時" },
+        { emo:"🚗", name:"開回飯店 約 60–70 分（抓寬）", note:"約 15:30 出發" },
+        { emo:"🛁", name:"回飯店休息", note:"約 16:40" }]),
+      S("晚上","EVENING",[
+        { emo:"🥩", name:"おばぁの家", note:"車程 5–10 分，下午 3 點後電話訂位" }])]},
+    { d:"11/09", w:"一", stay:"那霸 Almont（換飯店）", slots:[
+      S("上午","MORNING",[
+        { emo:"🧳", name:"名護飯店退房", note:"10:15 睡飽再走", fixed:true },
+        { emo:"🚗", name:"開車往萬座毛 約 25–30 分" },
+        { emo:"🐘", name:"萬座毛", note:"約 10:45，步道 30 分" }]),
+      S("中午","NOON",[
+        { emo:"🍚", name:"元祖海葡萄 丼飯", note:"萬座毛旁，走路就到" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🚗", name:"開車往美國村 約 60–75 分（抓寬）", note:"13:00 出發，走 58 號沿海" },
+        { emo:"🎡", name:"美國村", note:"約 14:15 到，慢逛到夕陽" },
+        { emo:"🌅", name:"北谷Sunset Beach", note:"17:40 夕陽，美國村走路到" }]),
+      S("晚上","EVENING",[
+        { emo:"🍽", name:"美國村吃晚餐", note:"候選：Kijimuna 塔可飯、Hokkaido Ramen Hayatemaru" },
+        { emo:"🚗", name:"開往那霸 約 50–60 分（抓寬）", note:"晚上 58 號進那霸常塞" },
+        { emo:"🏨", name:"入住 Almont 那霸県庁前", note:"約 20:30；停車場先問飯店", fixed:true }])]},
+    { d:"11/10", w:"二", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"🚗", name:"開車往首里城 約 25–30 分", note:"9:30 出發，停首里城公園停車場" },
+        { emo:"🏯", name:"首里城公園", note:"約 10:00" },
+        { emo:"🪨", name:"金城町石疊道", note:"順路下坡走，再走回停車場" }]),
+      S("中午","NOON",[
+        { emo:"🍲", name:"Ryukyu Sabo Ashibiuna 琉球茶房", note:"首里午餐" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🛁", name:"回飯店午休", note:"空檔可從候選清單挑" }]),
+      S("晚上","EVENING",[
+        { emo:"🛍", name:"國際通", note:"走路 3 分，逛到哪吃到哪（不開車）" }])]},
+    { d:"11/11", w:"三", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"🚗", name:"開車往南城 約 60 分（抓寬）", note:"8:45 出發，Google 約 40–50 分" },
+        { emo:"🪨", name:"齋場御嶽", note:"約 9:45；售票在物產館，走到入口要 7–8 分" },
+        { emo:"🌿", name:"知念岬公園", note:"車程 5 分" }]),
+      S("中午","NOON",[
+        { emo:"☕", name:"Cafe Curcuma", note:"海景午餐，車程 5 分" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🚗", name:"開車往 Costco 約 20 分" },
+        { emo:"🛒", name:"Costco 沖繩南城倉庫店", note:"14:15–16:15 慢慢逛，⚠️ 帶會員卡；東西放後車廂" },
+        { emo:"🚗", name:"直接開回飯店卸貨 約 40–50 分（抓寬）", note:"16:15 出發，冷藏品先放房間冰箱" }]),
+      S("晚上","EVENING",[
+        { emo:"🥟", name:"大石餃子店", note:"那霸晚餐（車停飯店，搭計程車或單軌）" }])]},
+    { d:"11/12", w:"四", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"☕", name:"睡到自然醒" }]),
+      S("中午","NOON",[
+        { emo:"🚗", name:"開車往 PARCO CITY 約 30–40 分（抓寬）", note:"10:50 出發，停車免費" },
+        { emo:"🛍", name:"San-A 浦添西海岸 PARCO CITY", note:"11:30–16:15 海景美食街午餐，下雨也不怕" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🚗", name:"開往豐崎 約 40–50 分（抓寬）＋加油", note:"16:15 出發，傍晚會塞；還車前加滿油" }]),
+      S("晚上","EVENING",[ RETURN_CAR ])]},
+    { d:"11/13", w:"五", stay:"那霸 Almont", slots:[
+      S("上午","MORNING",[
+        { emo:"🐟", name:"第一牧志公設市場", note:"10:30 早午餐，走路或搭單軌（已還車）" }]),
+      S("中午","NOON",[
+        { emo:"🏺", name:"壺屋やちむん通り", note:"陶器街散步" }]),
+      S("下午","AFTERNOON",[
+        { emo:"🛍", name:"國際通", note:"補伴手禮" }]),
+      S("晚上","EVENING",[
+        { emo:"🧺", name:"整理行李", note:"免稅品放隨身行李", fixed:true }])]},
+    { d:"11/14", w:"六", stay:"—（回台）", slots:[
+      S("上午","MORNING",[
+        { emo:"🍳", name:"旅の終わりの朝ごはん 美栄橋本店", note:"最後的早餐" },
+        { emo:"🧳", name:"飯店退房", fixed:true }]),
+      S("下午","AFTERNOON",[
+        { emo:"🚝", name:"14:00 離開飯店搭單軌", note:"県庁前→那霸空港約 12 分，抓 30 分含拖行李" },
+        ...FIX_D8 ])]}
+  ]}
+};
+
 const STYLE = {
   airport:{ c:"#ff7a5c", e:"✈️", label:"機場" },
   hotel:  { c:"#0b6e7f", e:"🏨", label:"飯店" },
@@ -1973,18 +2182,24 @@ const dayNav = document.getElementById("daynav");
 const dayBox = document.getElementById("days");
 const planned = new Set();                       // 已排進行程的地點名稱
 
-DAYS.forEach((day, i) => {
+function renderDays(days, nav, box, track){
+ const show = i => {
+  [...box.children].forEach((c, n) => c.hidden = n !== i);
+  [...nav.children].forEach((b, n) => b.classList.toggle("on", n === i));
+ };
+ nav.innerHTML = box.innerHTML = "";
+ days.forEach((day, i) => {
   const btn = document.createElement("button");
   btn.innerHTML = `<b>Day ${i+1}</b>${day.d}（${day.w}）`;
-  btn.addEventListener("click", () => showDay(i));
-  dayNav.appendChild(btn);
+  btn.addEventListener("click", () => show(i));
+  nav.appendChild(btn);
 
   const card = document.createElement("div");
   card.className = "day";
   card.hidden = true;
   const slots = day.slots.map(sl => {
     const rows = sl.items.map(it => {
-      if (it.name) planned.add(it.name);
+      if (track && it.name) planned.add(it.name);
       return `<div class="item${it.fixed ? " fixed" : ""}">
         <span class="ie">${it.emo || "•"}</span>
         <span><span class="iname">${it.name}</span>${it.note ? `<br><span class="inote">${it.note}</span>` : ""}</span>
@@ -1997,13 +2212,80 @@ DAYS.forEach((day, i) => {
       <span><span class="dd">${day.d}（${day.w}）</span><br><span class="dt">2026</span></span>
       <span class="stay">🛏 ${day.stay}</span>
     </div><div class="slots">${slots}</div>`;
-  dayBox.appendChild(card);
-});
-
-function showDay(i){
-  [...dayBox.children].forEach((c, n) => c.hidden = n !== i);
-  [...dayNav.children].forEach((b, n) => b.classList.toggle("on", n === i));
+  box.appendChild(card);
+ });
+ return show;
 }
+const showDay = renderDays(DAYS, dayNav, dayBox, true);
+
+/* AI 規劃區：切換滿滿版／悠閒版 */
+const aiTabs = document.getElementById("aiTabs");
+function showPlan(k){
+  aiTabs.querySelectorAll(".pchip").forEach(b => b.classList.toggle("on", b.dataset.plan === k));
+  document.getElementById("aiDesc").textContent = AI_PLANS[k].desc;
+  renderDays(AI_PLANS[k].days, document.getElementById("aiNav"), document.getElementById("aiDays"), false)(0);
+  curPlan = k; dayOn.clear(); buildDayBar();
+}
+aiTabs.addEventListener("click", e => { const b = e.target.closest(".pchip"); if (b) showPlan(b.dataset.plan); });
+/* ---------- 地圖：依 AI 規劃區目前選的版本，逐日開關行程 ---------- */
+const DAY_COLORS = ["#e4572e","#f3a712","#29bf12","#00a5cf","#6a4c93","#d81159","#3a86ff","#8a5a44"];
+const ALIAS = {   // 行程項目名稱 ≠ PLACES 名稱、但有明確地點的
+  "入住名護飯店":"Best Western 名戶海灘酒店", "名護飯店退房":"Best Western 名戶海灘酒店",
+  "入住 Almont 那霸県庁前":"Almont Hotel 那霸県庁前", "飯店退房":"Almont Hotel 那霸県庁前",
+  "12:25 抵達那霸・入境領行李":"那霸機場 OKA", "12:25 抵達那霸・12:30 OTS 取車":"那霸機場 OKA", "14:50 抵達那霸機場":"那霸機場 OKA"
+};
+const byName = Object.fromEntries(PLACES.map(p => [p.name, p]));
+const dayLayer = L.layerGroup();
+const dayOn = new Set();
+let curPlan = "loose";
+const dayBar = document.getElementById("dayMapBar");
+function dayStops(i){
+  const seen = new Set();
+  return AI_PLANS[curPlan].days[i].slots.flatMap(s => s.items)
+    .map(it => byName[ALIAS[it.name] || it.name])
+    .filter(p => p && !seen.has(p.name) && seen.add(p.name));
+}
+function drawDayMap(){
+  dayBar.querySelectorAll("button[data-day]").forEach(b => {
+    const on = dayOn.has(+b.dataset.day);
+    b.classList.toggle("dayon", on);
+    b.style.background = on ? DAY_COLORS[b.dataset.day] : "";
+  });
+  dayLayer.clearLayers();
+  if (!dayOn.size) { map.removeLayer(dayLayer); applyFilter(); return; }
+  Object.values(layers).forEach(g => map.removeLayer(g));   // 看行程時先收起一般圖釘
+  const pts = [];
+  [...dayOn].sort((a, b) => a - b).forEach(i => {
+    const c = DAY_COLORS[i], stops = dayStops(i);
+    if (stops.length > 1) L.polyline(stops.map(p => [p.lat, p.lng]), { color:c, weight:3, opacity:.75, dashArray:"6 6" }).addTo(dayLayer);
+    stops.forEach((p, n) => {
+      const icon = L.divIcon({ className:"", iconSize:[28,28], iconAnchor:[14,14], popupAnchor:[0,-14],
+        html:`<div class="dnum" style="background:${c}">${n+1}</div>` });
+      L.marker([p.lat, p.lng], { icon, zIndexOffset:1000 })
+        .bindPopup(`<b>Day ${i+1}・第 ${n+1} 站</b>${p.name}<br><a href="#" class="popup-more" data-name="${p.name.replace(/"/g, "&quot;")}">📖 詳細說明與介紹 →</a>`)
+        .addTo(dayLayer);
+      pts.push([p.lat, p.lng]);
+    });
+  });
+  dayLayer.addTo(map);
+  if (pts.length) map.fitBounds(pts, { padding:[40,40], maxZoom:13 });
+}
+function buildDayBar(){
+  dayBar.innerHTML = `<span class="lp-label">每日行程（${curPlan === "loose" ? "悠閒版" : "滿滿版"}）</span>` +
+    AI_PLANS[curPlan].days.map((d, i) => `<button type="button" class="lg alltoggle" data-day="${i}">Day ${i+1}・${d.d}</button>`).join("") +
+    `<button type="button" class="lg alltoggle" data-day-off>關閉行程</button>`;
+  drawDayMap();
+}
+dayBar.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.hasAttribute("data-day-off")) dayOn.clear();
+  else { const i = +b.dataset.day; dayOn.has(i) ? dayOn.delete(i) : dayOn.add(i); }
+  drawDayMap();
+});
+/* 點一般圖層／快速檢視時，自動退出行程檢視 */
+[legend, presetBox].forEach(el => el.addEventListener("click", () => { if (dayOn.size) { dayOn.clear(); drawDayMap(); } }, true));
+
+showPlan("loose");
 
 /* 預設顯示：旅程中顯示當天，其餘顯示 Day 1 */
 (function initDay(){
