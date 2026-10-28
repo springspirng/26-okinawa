@@ -53,6 +53,28 @@ const konbini = html.match(/<section id="konbini">([\s\S]*?)<\/section>/)[1];
 assert(shopping.includes('酸化マグネシウムE便秘薬') && shopping.includes('待購買商品・藥妝'));
 assert(!konbini.includes('酸化マグネシウムE便秘薬'), 'Drugstore products must not leak into convenience-store food');
 assert(shopping.includes(medicine.safety_note) && shopping.includes('kenei-pharm.com'));
+for (const [name, basis, amount, stop] of [
+  ['第一三共 ペラックT錠a 18錠', '每6錠', '750mg', '5～6天'],
+  ['大正 パブロン50錠 48錠', '每4錠', '150mg', '5～6次']
+]) {
+  const p = get(name);
+  assert(p && p.category === '藥妝' && p.purchase_status === '待購買' && p.area === '全區・藥妝店', name);
+  assert(!('lat' in p) && !('lng' in p));
+  assert.equal(source.filter(x => x.name === name).length, 1);
+  assert.equal(p.information_checked_on, '2026-10-28');
+  assert(p.ingredient_note.includes(basis) && p.ingredient_note.includes(amount) && p.ingredient_note.includes('甘草'));
+  assert(p.safety_note.includes('不可自行併用') && p.safety_note.includes('甘草') && (p.safety_note + p.dosage_note).includes(stop));
+  assert(p.price_note.includes('官方') && p.price_note.includes('不是沖繩'));
+  assert(p.desc.includes('保存') && p.show_to_staff.includes('ありますか'));
+  assert(p.references.some(r => r.url.endsWith('.pdf')));
+  assert(/^data:image\/jpeg;base64,/.test(p.image_data));
+  const image = Buffer.from(p.image_data.split(',')[1], 'base64');
+  assert.equal(image.readUInt16BE(0), 0xffd8);
+  assert(shopping.includes(p.name) && shopping.includes(p.safety_note) && shopping.includes(p.image_data));
+  assert(shopping.includes(p.site) && p.references.every(r => shopping.includes(r.url)));
+  assert(!konbini.includes(p.name), 'Medicine must stay in drugstore shopping');
+}
+assert(get('大正 パブロン50錠 48錠').safety_note.includes('藥劑性過敏症症候群'));
 assert(/<section id="ai-index">[\s\S]*?<details[\s\S]*?AI 地區索引/.test(html));
 const textBlock = html.match(/<!-- AI-INDEX-TEXT:START -->([\s\S]*?)<!-- AI-INDEX-TEXT:END -->/);
 assert(textBlock, 'Missing static plain-text fallback');
